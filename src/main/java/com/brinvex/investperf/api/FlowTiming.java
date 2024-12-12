@@ -1,4 +1,4 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.api;
 
 public enum FlowTiming {
 

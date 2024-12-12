@@ -1,4 +1,4 @@
-package com.brinvex.ipa.internal;
+package com.brinvex.investperf.internal;
 
 import com.brinvex.finance.types.vo.DateAmount;
 

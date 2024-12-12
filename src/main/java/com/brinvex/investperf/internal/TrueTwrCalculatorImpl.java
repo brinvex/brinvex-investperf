@@ -1,8 +1,8 @@
-package com.brinvex.ipa.internal;
+package com.brinvex.investperf.internal;
 
-import com.brinvex.ipa.api.FlowTiming;
-import com.brinvex.ipa.api.PerfCalcRequest;
-import com.brinvex.ipa.api.PerformanceCalculator;
+import com.brinvex.investperf.api.FlowTiming;
+import com.brinvex.investperf.api.PerfCalcRequest;
+import com.brinvex.investperf.api.PerformanceCalculator;
 import com.brinvex.util.java.validation.Assert;
 
 import java.math.BigDecimal;

@@ -1,12 +1,12 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.api;
 
 import com.brinvex.finance.types.enu.Frequency;
 import com.brinvex.finance.types.vo.DateAmount;
-import com.brinvex.ipa.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.MwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TrueTwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TwrCalculator;
-import com.brinvex.ipa.internal.RequestSanitizer;
+import com.brinvex.investperf.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.MwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TrueTwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TwrCalculator;
+import com.brinvex.investperf.internal.RequestSanitizer;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

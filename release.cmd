@@ -5,8 +5,8 @@ set new_version=1.0.0
 set jsh_content=^
     Files.writeString(Path.of("README.md"), ^
         Files.readString(Path.of("README.md")).replaceAll(^
-            "<brinvex-investment-performance-analyzer.version>(.*)</brinvex-investment-performance-analyzer.version>", ^
-            "<brinvex-investment-performance-analyzer.version>%%s</brinvex-investment-performance-analyzer.version>".formatted(System.getenv("new_version"))), ^
+            "<brinvex-investperf.version>(.*)</brinvex-investperf.version>", ^
+            "<brinvex-investperf.version>%%s</brinvex-investperf.version>".formatted(System.getenv("new_version"))), ^
     StandardOpenOption.TRUNCATE_EXISTING);
 
 echo %jsh_content% | %JAVA_HOME%\bin\jshell -

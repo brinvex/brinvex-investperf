@@ -1,11 +1,11 @@
-package test.com.brinvex.ipa;
+package test.com.brinvex.investperf;
 
-import com.brinvex.ipa.api.Annualizer;
+import com.brinvex.investperf.api.Annualizer;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static com.brinvex.ipa.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
+import static com.brinvex.investperf.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
 import static java.time.LocalDate.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,15 +1,15 @@
-package com.brinvex.ipa.internal;
+package com.brinvex.investperf.internal;
 
 import com.brinvex.finance.types.enu.Frequency;
-import com.brinvex.ipa.api.Annualizer;
-import com.brinvex.ipa.api.FlowTiming;
-import com.brinvex.ipa.api.PerfAnalysis;
-import com.brinvex.ipa.api.PerfAnalysisRequest;
-import com.brinvex.ipa.api.PerfCalcRequest;
-import com.brinvex.ipa.api.PerformanceAnalyzer;
-import com.brinvex.ipa.api.PerformanceCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.MwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TwrCalculator;
+import com.brinvex.investperf.api.Annualizer;
+import com.brinvex.investperf.api.FlowTiming;
+import com.brinvex.investperf.api.PerfAnalysis;
+import com.brinvex.investperf.api.PerfAnalysisRequest;
+import com.brinvex.investperf.api.PerfCalcRequest;
+import com.brinvex.investperf.api.PerformanceAnalyzer;
+import com.brinvex.investperf.api.PerformanceCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.MwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TwrCalculator;
 import com.brinvex.util.java.LimitedLinkedMap;
 import com.brinvex.util.java.Num;
 import com.brinvex.util.java.validation.Assert;
@@ -24,9 +24,9 @@ import java.util.SequencedMap;
 import java.util.SortedMap;
 import java.util.function.Function;
 
-import static com.brinvex.ipa.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
-import static com.brinvex.ipa.api.AnnualizationOption.DO_NOT_ANNUALIZE;
-import static com.brinvex.ipa.api.FlowTiming.BEGINNING_OF_DAY;
+import static com.brinvex.investperf.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
+import static com.brinvex.investperf.api.AnnualizationOption.DO_NOT_ANNUALIZE;
+import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
 import static com.brinvex.util.java.DateUtil.maxDate;
 import static com.brinvex.util.java.DateUtil.minDate;
 import static com.brinvex.util.java.NullUtil.nullSafe;

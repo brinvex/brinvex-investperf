@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.brinvex</groupId>
-    <artifactId>brinvex-investment-performance-analyzer</artifactId>
+    <artifactId>brinvex-investperf</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -45,7 +45,7 @@
         </developer>
     </developers>
     <scm>
-        <url>https://github.com/brinvex/brinvex-investment-performance-analyzer</url>
+        <url>https://github.com/brinvex/brinvex-investperf</url>
     </scm>
     <organization>
         <name>Brinvex</name>

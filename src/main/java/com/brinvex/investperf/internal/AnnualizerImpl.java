@@ -1,4 +1,7 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.internal;
+
+import com.brinvex.investperf.api.AnnualizationOption;
+import com.brinvex.investperf.api.Annualizer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -7,20 +10,11 @@ import java.time.temporal.ChronoUnit;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 
-public class AnnualizationUtil {
+public class AnnualizerImpl implements Annualizer {
 
-    public static BigDecimal annualizeReturn(
-            AnnualizationOption annualizationOption,
-            BigDecimal cumulReturn,
-            LocalDate startDateIncl,
-            LocalDate endDateIncl
-    ) {
-        BigDecimal cumulFactor = cumulReturn.add(BigDecimal.ONE);
-        BigDecimal annFactor = annualizeGrowthFactor(annualizationOption, cumulFactor, startDateIncl, endDateIncl);
-        return annFactor.subtract(BigDecimal.ONE);
-    }
 
-    public static BigDecimal annualizeGrowthFactor(
+    @Override
+    public BigDecimal annualizeGrowthFactor(
             AnnualizationOption annualizationOption,
             BigDecimal cumulGrowthFactor,
             LocalDate startDateIncl,
@@ -54,7 +48,8 @@ public class AnnualizationUtil {
         return BigDecimal.valueOf(Math.pow(cumGrowthFactor, exponent));
     }
 
-    public static BigDecimal annualizeGrowthFactor(
+    @Override
+    public BigDecimal annualizeGrowthFactor(
             AnnualizationOption annualizationOption,
             BigDecimal cumulGrowthFactor,
             int fullYears

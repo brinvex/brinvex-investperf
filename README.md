@@ -138,10 +138,10 @@ https://en.wikipedia.org/wiki/Modified_Dietz_method
 https://en.wikipedia.org/wiki/Time-weighted_return  
 https://www.gipsstandards.org  
 
-## Maven Dependencies
+## Maven and JPMS Setup
 ````
 <properties>
-     <brinvex-investment-performance-analyzer.version>1.0.0</brinvex-investment-performance-analyzer.version>
+     <brinvex-investperf.version>1.0.0</brinvex-investperf.version>
 </properties>
 
 <repository>
@@ -154,17 +154,13 @@ https://www.gipsstandards.org
 </repository>
 
 <dependency>
-    <groupId>com.brinvex.fintracker</groupId>
-    <artifactId>brinvex-fintracker-performance-api</artifactId>
-    <version>${brinvex-fintracker.version}</version>
-</dependency>
-<dependency>
-    <groupId>com.brinvex.fintracker</groupId>
-    <artifactId>brinvex-fintracker-performance-impl</artifactId>
-    <version>${brinvex-fintracker.version}</version>
-    <scope>runtime</scope>
+    <groupId>com.brinvex</groupId>
+    <artifactId>brinvex-investperf</artifactId>
+    <version>${brinvex-investperf.version}</version>
 </dependency>
 ````
+
+The library supports JPMS and exports the module named ````com.brinvex.investperf````.
 
 ## Requirements
 
