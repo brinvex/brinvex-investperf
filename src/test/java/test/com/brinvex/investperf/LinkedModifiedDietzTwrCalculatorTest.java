@@ -1,14 +1,14 @@
-package test.com.brinvex.ipa;
+package test.com.brinvex.investperf;
 
-import com.brinvex.finance.types.vo.DateAmount;
-import com.brinvex.ipa.api.PerformanceCalculator;
+import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.PerformanceCalculator;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.brinvex.ipa.api.AnnualizationOption.DO_NOT_ANNUALIZE;
-import static com.brinvex.ipa.api.FlowTiming.BEGINNING_OF_DAY;
+import static com.brinvex.investperf.api.AnnualizationOption.DO_NOT_ANNUALIZE;
+import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
 import static java.time.LocalDate.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,7 +17,7 @@ class LinkedModifiedDietzTwrCalculatorTest {
     @Test
     void linkedModifiedDietzTwr_readmeExample() {
         PerformanceCalculator.LinkedModifiedDietzTwrCalculator linkedTwrCalculator = PerformanceCalculator.linkedModifiedDietzTwrCalculator();
-        BigDecimal twrReturn = linkedTwrCalculator.calculateReturn(com.brinvex.ipa.api.PerfCalcRequest.builder()
+        BigDecimal twrReturn = linkedTwrCalculator.calculateReturn(com.brinvex.investperf.api.PerfCalcRequest.builder()
                 .startDateIncl(parse("2021-01-01"))
                 .endDateIncl(parse("2021-03-31"))
                 .startAssetValueExcl(new BigDecimal("10000"))

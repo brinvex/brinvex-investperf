@@ -1,8 +1,8 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.api;
 
-import com.brinvex.ipa.internal.LinkedModifiedDietzTwrCalculatorImpl;
-import com.brinvex.ipa.internal.ModifiedDietzMwrCalculatorImpl;
-import com.brinvex.ipa.internal.TrueTwrCalculatorImpl;
+import com.brinvex.investperf.internal.LinkedModifiedDietzTwrCalculatorImpl;
+import com.brinvex.investperf.internal.ModifiedDietzMwrCalculatorImpl;
+import com.brinvex.investperf.internal.TrueTwrCalculatorImpl;
 
 import java.math.BigDecimal;
 

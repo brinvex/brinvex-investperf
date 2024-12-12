@@ -1,16 +1,14 @@
-package test.com.brinvex.ipa;
+package test.com.brinvex.investperf;
 
-import com.brinvex.finance.types.vo.DateAmount;
-import com.brinvex.ipa.api.PerfAnalysis;
-import com.brinvex.ipa.api.PerfAnalysisRequest;
-import com.brinvex.ipa.api.PerformanceAnalyzer;
-import com.brinvex.ipa.api.PerformanceCalculator;
-import com.brinvex.util.java.IOCallUtil;
-import com.brinvex.util.java.Num;
-import com.brinvex.util.java.collection.CollectionPrintUtil;
-import org.junit.jupiter.api.Assertions;
+import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.PerfAnalysis;
+import com.brinvex.investperf.api.PerfAnalysisRequest;
+import com.brinvex.investperf.api.PerformanceAnalyzer;
+import com.brinvex.investperf.api.PerformanceCalculator;
+import com.brinvex.java.IOCallUtil;
+import com.brinvex.java.Num;
+import com.brinvex.java.collection.CollectionPrintUtil;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
@@ -24,17 +22,17 @@ import java.util.SequencedCollection;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
-import static com.brinvex.ipa.api.FlowTiming.BEGINNING_OF_DAY;
-import static com.brinvex.ipa.api.FlowTiming.END_OF_DAY;
-import static com.brinvex.util.java.collection.Collectors.toTreeMap;
+import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
+import static com.brinvex.investperf.api.FlowTiming.END_OF_DAY;
+import static com.brinvex.java.collection.Collectors.toTreeMap;
 import static java.time.LocalDate.parse;
 import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static test.com.brinvex.ipa.PerformanceAnalyzerTest.assertEqualsWithMultilineMsg;
+import static test.com.brinvex.investperf.PerformanceAnalyzerTest.assertEqualsWithMultilineMsg;
 
 class PerformanceAnalyzerIbkrChallengeTest {
 
-    private static final Path TEST_DATASET1_DIR = Path.of("c:/prj/bx/bx-investment-performance-analyzer/test-data/test-dataset1/");
+    private static final Path TEST_DATASET1_DIR = Path.of("c:/prj/bx/bx-investperf/test-data/test-dataset1/");
 
     private static TreeMap<LocalDate, BigDecimal> assetValues;
 

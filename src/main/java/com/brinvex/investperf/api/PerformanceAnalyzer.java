@@ -1,7 +1,7 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.api;
 
 
-import com.brinvex.ipa.internal.PerformanceAnalyzerImpl;
+import com.brinvex.investperf.internal.PerformanceAnalyzerImpl;
 
 import java.util.SequencedCollection;
 

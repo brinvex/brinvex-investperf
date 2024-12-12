@@ -1,22 +1,22 @@
-package test.com.brinvex.ipa;
+package test.com.brinvex.investperf;
 
-import com.brinvex.finance.types.vo.DateAmount;
-import com.brinvex.ipa.api.PerfCalcRequest;
-import com.brinvex.ipa.api.PerfCalcRequest.PerfCalcRequestBuilder;
-import com.brinvex.ipa.api.PerformanceCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.LinkedModifiedDietzTwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TrueTwrCalculator;
+import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.PerfCalcRequest;
+import com.brinvex.investperf.api.PerfCalcRequest.PerfCalcRequestBuilder;
+import com.brinvex.investperf.api.PerformanceCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.LinkedModifiedDietzTwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TrueTwrCalculator;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.brinvex.ipa.api.AnnualizationOption.ANNUALIZE;
-import static com.brinvex.ipa.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
-import static com.brinvex.ipa.api.AnnualizationOption.DO_NOT_ANNUALIZE;
-import static com.brinvex.ipa.api.FlowTiming.BEGINNING_OF_DAY;
-import static com.brinvex.ipa.api.FlowTiming.END_OF_DAY;
+import static com.brinvex.investperf.api.AnnualizationOption.ANNUALIZE;
+import static com.brinvex.investperf.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
+import static com.brinvex.investperf.api.AnnualizationOption.DO_NOT_ANNUALIZE;
+import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
+import static com.brinvex.investperf.api.FlowTiming.END_OF_DAY;
 import static java.math.RoundingMode.HALF_UP;
 import static java.time.LocalDate.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;

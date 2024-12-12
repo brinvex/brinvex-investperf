@@ -1,7 +1,7 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.api;
 
-import com.brinvex.finance.types.vo.DateAmount;
-import com.brinvex.ipa.internal.RequestSanitizer;
+import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.internal.RequestSanitizer;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,7 +13,6 @@ import java.util.function.Function;
 
 import static java.math.BigDecimal.ZERO;
 import static java.util.Collections.unmodifiableSortedMap;
-import static java.util.stream.Collectors.toMap;
 
 public final class PerfCalcRequest {
     private final LocalDate startDateIncl;

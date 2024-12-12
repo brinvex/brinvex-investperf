@@ -1,12 +1,12 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.api;
 
-import com.brinvex.finance.types.enu.Frequency;
-import com.brinvex.finance.types.vo.DateAmount;
-import com.brinvex.ipa.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.MwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TrueTwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TwrCalculator;
-import com.brinvex.ipa.internal.RequestSanitizer;
+import com.brinvex.fintypes.enu.Frequency;
+import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.MwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TrueTwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TwrCalculator;
+import com.brinvex.investperf.internal.RequestSanitizer;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,8 +27,8 @@ public final class PerfAnalysisRequest {
     private final BiFunction<LocalDate, LocalDate, SortedMap<LocalDate, BigDecimal>> flows;
     private final FlowTiming twrFlowTiming;
     private final FlowTiming mwrFlowTiming;
-    private final Class<? extends TwrCalculator> twrCalculatorType;
-    private final Class<? extends MwrCalculator> mwrCalculatorType;
+    private final String twrCalculatorType;
+    private final String mwrCalculatorType;
     private final int largeFlowLevelInPercent;
     private final boolean resultRatesInPercent;
     private final int calcScale;
@@ -60,8 +60,8 @@ public final class PerfAnalysisRequest {
             BiFunction<LocalDate, LocalDate, SortedMap<LocalDate, BigDecimal>> flowsProvider,
             Map<LocalDate, BigDecimal> flowsMap,
             Collection<DateAmount> flowsCollection,
-            Class<? extends TwrCalculator> twrCalculatorType,
-            Class<? extends MwrCalculator> mwrCalculatorType,
+            String twrCalculatorType,
+            String mwrCalculatorType,
             FlowTiming twrFlowTiming,
             FlowTiming mwrFlowTiming,
             Integer largeFlowLevelInPercent,
@@ -104,8 +104,8 @@ public final class PerfAnalysisRequest {
         this.resultFrequency = resultFrequency == null ? Frequency.MONTH : resultFrequency;
         this.twrFlowTiming = twrFlowTiming == null ? FlowTiming.BEGINNING_OF_DAY : twrFlowTiming;
         this.mwrFlowTiming = mwrFlowTiming == null ? FlowTiming.BEGINNING_OF_DAY : mwrFlowTiming;
-        this.twrCalculatorType = twrCalculatorType == null ? TrueTwrCalculator.class : twrCalculatorType;
-        this.mwrCalculatorType = mwrCalculatorType == null ? ModifiedDietzMwrCalculator.class : mwrCalculatorType;
+        this.twrCalculatorType = twrCalculatorType == null ? TrueTwrCalculator.class.getSimpleName() : twrCalculatorType;
+        this.mwrCalculatorType = mwrCalculatorType == null ? ModifiedDietzMwrCalculator.class.getSimpleName() : mwrCalculatorType;
         this.resultRatesInPercent = resultRatesInPercent != null && resultRatesInPercent;
         this.largeFlowLevelInPercent = largeFlowLevelInPercent == null ? 5 : largeFlowLevelInPercent;
         this.calcScale = calcScale == null ? 20 : calcScale;
@@ -207,11 +207,11 @@ public final class PerfAnalysisRequest {
         return this.mwrFlowTiming;
     }
 
-    public Class<? extends TwrCalculator> twrCalculatorType() {
+    public String twrCalculatorType() {
         return this.twrCalculatorType;
     }
 
-    public Class<? extends MwrCalculator> mwrCalculatorType() {
+    public String mwrCalculatorType() {
         return this.mwrCalculatorType;
     }
 
@@ -300,8 +300,8 @@ public final class PerfAnalysisRequest {
         private Collection<DateAmount> incomesCollection;
         private FlowTiming twrFlowTiming;
         private FlowTiming mwrFlowTiming;
-        private Class<? extends TwrCalculator> twrCalculatorType;
-        private Class<? extends MwrCalculator> mwrCalculatorType;
+        private String twrCalculatorType;
+        private String mwrCalculatorType;
         private Integer largeFlowLevelInPercent;
         private Boolean resultRatesInPercent;
         private Integer calcScale;
@@ -472,11 +472,21 @@ public final class PerfAnalysisRequest {
         }
 
         public PerfAnalysisRequestBuilder twrCalculatorType(Class<? extends TwrCalculator> twrCalculatorType) {
-            this.twrCalculatorType = twrCalculatorType;
+            this.twrCalculatorType = twrCalculatorType == null ? null : twrCalculatorType.getSimpleName();
             return this;
         }
 
         public PerfAnalysisRequestBuilder mwrCalculatorType(Class<? extends MwrCalculator> mwrCalculatorType) {
+            this.mwrCalculatorType = mwrCalculatorType == null ? null : mwrCalculatorType.getSimpleName();
+            return this;
+        }
+
+        public PerfAnalysisRequestBuilder twrCalculatorType(String twrCalculatorType) {
+            this.twrCalculatorType = twrCalculatorType;
+            return this;
+        }
+
+        public PerfAnalysisRequestBuilder mwrCalculatorType(String mwrCalculatorType) {
             this.mwrCalculatorType = mwrCalculatorType;
             return this;
         }

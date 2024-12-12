@@ -1,7 +1,7 @@
-module test.brinvex.ipa {
-    requires com.brinvex.ipa;
+module test.com.brinvex.investperf {
+    requires com.brinvex.investperf;
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.engine;
-    opens test.com.brinvex.ipa to org.junit.platform.commons;
+    opens test.com.brinvex.investperf to org.junit.platform.commons;
 
 }

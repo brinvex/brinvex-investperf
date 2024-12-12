@@ -1,4 +1,4 @@
-package com.brinvex.ipa.api;
+package com.brinvex.investperf.api;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

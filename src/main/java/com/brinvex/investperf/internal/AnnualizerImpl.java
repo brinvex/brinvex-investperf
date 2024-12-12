@@ -1,7 +1,7 @@
-package com.brinvex.ipa.internal;
+package com.brinvex.investperf.internal;
 
-import com.brinvex.ipa.api.AnnualizationOption;
-import com.brinvex.ipa.api.Annualizer;
+import com.brinvex.investperf.api.AnnualizationOption;
+import com.brinvex.investperf.api.Annualizer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

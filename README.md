@@ -1,6 +1,14 @@
 ## Brinvex Investment Performance Analyzer
 
-The _Brinvex Investment Performance Analyzer_ is a compact Java library for analyzing the financial investment performance.
+The _Brinvex Investment Performance Analyzer_ (technically named _brinvex-investperf_) 
+is a compact Java library designed for calculating and analyzing financial investment performance,
+guided by the principles of the _Global Investment Performance Standards (GIPS)_ 
+to ensure accuracy and consistency.
+
+The following examples demonstrate how easily and fluently one can use the tool to calculate 
+and analyze financial investment performance. 
+With minimal setup, you can define key parameters such as asset values and cash flows, 
+and quickly get back a detailed performance report, including TWR, MWR any many more. 
 
 ````java
 List<PerfAnalysis> perfAnalyses = PerformanceAnalyzer.INSTANCE.analyzePerformance(PerfAnalysisRequest.builder()
@@ -47,7 +55,6 @@ List<PerfAnalysis> perfAnalyses = PerformanceAnalyzer.INSTANCE.analyzePerformanc
 | Trailing Avg Profit 1Y | -4000.00 | 7750.00 | 6166.67 |
 | Trailing Avg Flow 1Y   |  2000.00 |  750.00 |  500.00 |
 
-
 ### True Time-Weighted Rate of Return Calculator
 _True Time-Weighted Return (TWR)_  is often the preferred method for evaluating portfolio performance
 as it eliminates the impact of cash flows.
@@ -73,6 +80,8 @@ BigDecimal twrReturn = twrCalculator.calculateReturn(PerfCalcRequest.builder()
         .build());
 assertEquals("19.6053", twrReturn.toPlainString());
 ````
+#### Time-Weighted Rate of Return - Distorting effects of contributions
+See the demo spreadsheet:  ```Demo_TWR_Distorting_effects_of_contributions.xlsx```
 
 ### Modified Dietz Money-Weighted Rate of Return Calculator
 
@@ -138,10 +147,10 @@ https://en.wikipedia.org/wiki/Modified_Dietz_method
 https://en.wikipedia.org/wiki/Time-weighted_return  
 https://www.gipsstandards.org  
 
-## Maven Dependencies
+## Maven and JPMS Setup
 ````
 <properties>
-     <brinvex-investment-performance-analyzer.version>1.0.0</brinvex-investment-performance-analyzer.version>
+     <brinvex-investperf.version>1.0.7</brinvex-investperf.version>
 </properties>
 
 <repository>
@@ -154,17 +163,13 @@ https://www.gipsstandards.org
 </repository>
 
 <dependency>
-    <groupId>com.brinvex.fintracker</groupId>
-    <artifactId>brinvex-fintracker-performance-api</artifactId>
-    <version>${brinvex-fintracker.version}</version>
-</dependency>
-<dependency>
-    <groupId>com.brinvex.fintracker</groupId>
-    <artifactId>brinvex-fintracker-performance-impl</artifactId>
-    <version>${brinvex-fintracker.version}</version>
-    <scope>runtime</scope>
+    <groupId>com.brinvex</groupId>
+    <artifactId>brinvex-investperf</artifactId>
+    <version>${brinvex-investperf.version}</version>
 </dependency>
 ````
+
+The library supports JPMS and exports the module named ````com.brinvex.investperf````.
 
 ## Requirements
 

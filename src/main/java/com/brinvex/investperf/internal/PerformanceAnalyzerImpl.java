@@ -1,37 +1,37 @@
-package com.brinvex.ipa.internal;
+package com.brinvex.investperf.internal;
 
-import com.brinvex.finance.types.enu.Frequency;
-import com.brinvex.ipa.api.Annualizer;
-import com.brinvex.ipa.api.FlowTiming;
-import com.brinvex.ipa.api.PerfAnalysis;
-import com.brinvex.ipa.api.PerfAnalysisRequest;
-import com.brinvex.ipa.api.PerfCalcRequest;
-import com.brinvex.ipa.api.PerformanceAnalyzer;
-import com.brinvex.ipa.api.PerformanceCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.MwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TwrCalculator;
-import com.brinvex.util.java.LimitedLinkedMap;
-import com.brinvex.util.java.Num;
-import com.brinvex.util.java.validation.Assert;
+import com.brinvex.fintypes.enu.Frequency;
+import com.brinvex.investperf.api.Annualizer;
+import com.brinvex.investperf.api.FlowTiming;
+import com.brinvex.investperf.api.PerfAnalysis;
+import com.brinvex.investperf.api.PerfAnalysisRequest;
+import com.brinvex.investperf.api.PerfCalcRequest;
+import com.brinvex.investperf.api.PerformanceAnalyzer;
+import com.brinvex.investperf.api.PerformanceCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.MwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TwrCalculator;
+import com.brinvex.java.LimitedLinkedMap;
+import com.brinvex.java.Num;
+import com.brinvex.java.validation.Assert;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SequencedCollection;
 import java.util.SequencedMap;
 import java.util.SortedMap;
 import java.util.function.Function;
 
-import static com.brinvex.ipa.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
-import static com.brinvex.ipa.api.AnnualizationOption.DO_NOT_ANNUALIZE;
-import static com.brinvex.ipa.api.FlowTiming.BEGINNING_OF_DAY;
-import static com.brinvex.util.java.DateUtil.maxDate;
-import static com.brinvex.util.java.DateUtil.minDate;
-import static com.brinvex.util.java.NullUtil.nullSafe;
-import static com.brinvex.util.java.collection.CollectionUtil.rangeSafeHeadMap;
-import static com.brinvex.util.java.collection.CollectionUtil.rangeSafeTailMap;
+import static com.brinvex.investperf.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
+import static com.brinvex.investperf.api.AnnualizationOption.DO_NOT_ANNUALIZE;
+import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
+import static com.brinvex.java.DateUtil.maxDate;
+import static com.brinvex.java.DateUtil.minDate;
+import static com.brinvex.java.NullUtil.nullSafe;
+import static com.brinvex.java.collection.CollectionUtil.rangeSafeHeadMap;
+import static com.brinvex.java.collection.CollectionUtil.rangeSafeTailMap;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 import static java.util.Collections.emptySortedMap;
@@ -40,10 +40,7 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("DuplicatedCode")
 public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
 
-    private final Function<String, TwrCalculator> twrCalculatorProvider = PerformanceCalculator::twrCalculator;
-
-    private final Function<String, MwrCalculator> mwrCalculatorProvider = PerformanceCalculator::mwrCalculator;
-
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public SequencedCollection<PerfAnalysis> analyzePerformance(PerfAnalysisRequest req) {
         Frequency frequency = req.resultFrequency();
@@ -56,8 +53,8 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
         int resultRateScale = req.resultRateScale();
         int resultAmountScale = req.resultAmountScale();
         RoundingMode roundingMode = req.roundingMode();
-        TwrCalculator twrCalculator = twrCalculatorProvider.apply(req.twrCalculatorType().getSimpleName());
-        MwrCalculator mwrCalculator = mwrCalculatorProvider.apply(req.mwrCalculatorType().getSimpleName());
+        TwrCalculator twrCalculator = PerformanceCalculator.twrCalculator(req.twrCalculatorType());
+        MwrCalculator mwrCalculator = PerformanceCalculator.mwrCalculator(req.mwrCalculatorType());
         boolean calculateTrailingAvgProfit1Y = req.calculateTrailingAvgProfit1Y();
         boolean calculateTrailingAvgFlow1Y = req.calculateTrailingAvgFlow1Y();
         boolean calculatePeriodIncome = req.calculatePeriodIncome();
@@ -78,15 +75,23 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
         if (flows == null) {
             flows = emptySortedMap();
         } else if (!flows.isEmpty()) {
-            assert !flows.firstKey().isBefore(calcStartDateIncl);
-            assert !flows.lastKey().isAfter(calcEndDateIncl);
+            Entry<LocalDate, BigDecimal> firstFlow = flows.firstEntry();
+            Assert.isTrue(!firstFlow.getKey().isBefore(calcStartDateIncl),
+                    () -> "firstFlow must not be before calcStartDateIncl; %s, %s".formatted(firstFlow, calcStartDateExcl));
+            Entry<LocalDate, BigDecimal> lastFlow = flows.lastEntry();
+            Assert.isTrue(!lastFlow.getKey().isAfter(calcEndDateIncl),
+                    () -> "lastFlow must not be after calcEndDateIncl; %s, %s".formatted(lastFlow, calcEndDateIncl));
         }
         SortedMap<LocalDate, BigDecimal> incomes = nullSafe(req.incomes(), _incomes -> _incomes.apply(calcStartDateIncl, calcEndDateIncl));
         if (incomes == null) {
             incomes = emptySortedMap();
         } else if (!incomes.isEmpty()) {
-            Assert.isTrue(!incomes.firstKey().isBefore(calcStartDateIncl));
-            Assert.isTrue(!incomes.lastKey().isAfter(calcEndDateIncl));
+            Entry<LocalDate, BigDecimal> firstIncome = incomes.firstEntry();
+            Assert.isTrue(!firstIncome.getKey().isBefore(calcStartDateIncl),
+                    () -> "firstIncome must not be before calcStartDateIncl; %s, %s".formatted(firstIncome, calcStartDateExcl));
+            Entry<LocalDate, BigDecimal> lastIncome = incomes.lastEntry();
+            Assert.isTrue(!lastIncome.getKey().isAfter(calcEndDateIncl),
+                    () -> "lastIncome must not be after calcEndDateIncl; %s, %s".formatted(lastIncome, calcEndDateIncl));
         }
 
         Annualizer annualizer = Annualizer.INSTANCE;
@@ -160,7 +165,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                     SortedMap<LocalDate, BigDecimal> adjPeriodFlows = periodFlows;
                     if (!periodFlows.isEmpty()) {
                         if (twrFlowTiming == BEGINNING_OF_DAY) {
-                            Map.Entry<LocalDate, BigDecimal> firstFlowEntry = periodFlows.firstEntry();
+                            Entry<LocalDate, BigDecimal> firstFlowEntry = periodFlows.firstEntry();
                             LocalDate firstFlowDate = firstFlowEntry.getKey();
                             if (firstFlowDate.isEqual(periodStartDateIncl)) {
                                 adjPeriodStartValueExcl = periodStartValueExcl.add(firstFlowEntry.getValue());

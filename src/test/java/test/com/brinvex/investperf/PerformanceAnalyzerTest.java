@@ -1,13 +1,13 @@
-package test.com.brinvex.ipa;
+package test.com.brinvex.investperf;
 
-import com.brinvex.finance.types.vo.DateAmount;
-import com.brinvex.ipa.api.PerfAnalysis;
-import com.brinvex.ipa.api.PerfAnalysisRequest;
-import com.brinvex.ipa.api.PerformanceAnalyzer;
-import com.brinvex.ipa.api.PerformanceCalculator.LinkedModifiedDietzTwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
-import com.brinvex.ipa.api.PerformanceCalculator.TrueTwrCalculator;
-import com.brinvex.util.java.collection.CollectionPrintUtil;
+import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.PerfAnalysis;
+import com.brinvex.investperf.api.PerfAnalysisRequest;
+import com.brinvex.investperf.api.PerformanceAnalyzer;
+import com.brinvex.investperf.api.PerformanceCalculator.LinkedModifiedDietzTwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
+import com.brinvex.investperf.api.PerformanceCalculator.TrueTwrCalculator;
+import com.brinvex.java.collection.CollectionPrintUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.SequencedCollection;
 import java.util.TreeMap;
 
-import static com.brinvex.finance.types.enu.Frequency.MONTH;
-import static com.brinvex.ipa.api.FlowTiming.BEGINNING_OF_DAY;
-import static com.brinvex.ipa.api.FlowTiming.END_OF_DAY;
+import static com.brinvex.fintypes.enu.Frequency.MONTH;
+import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
+import static com.brinvex.investperf.api.FlowTiming.END_OF_DAY;
 import static java.time.LocalDate.now;
 import static java.time.LocalDate.parse;
 import static org.junit.jupiter.api.Assertions.assertThrows;

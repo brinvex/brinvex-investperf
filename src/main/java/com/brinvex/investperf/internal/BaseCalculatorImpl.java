@@ -1,12 +1,12 @@
-package com.brinvex.ipa.internal;
+package com.brinvex.investperf.internal;
 
 
-import com.brinvex.ipa.api.Annualizer;
-import com.brinvex.ipa.api.FlowTiming;
-import com.brinvex.ipa.api.PerfCalcRequest;
-import com.brinvex.ipa.api.PerformanceCalculator;
-import com.brinvex.util.java.Num;
-import com.brinvex.util.java.collection.CollectionUtil;
+import com.brinvex.investperf.api.Annualizer;
+import com.brinvex.investperf.api.FlowTiming;
+import com.brinvex.investperf.api.PerfCalcRequest;
+import com.brinvex.investperf.api.PerformanceCalculator;
+import com.brinvex.java.Num;
+import com.brinvex.java.collection.CollectionUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

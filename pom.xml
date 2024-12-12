@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.brinvex</groupId>
-    <artifactId>brinvex-investment-performance-analyzer</artifactId>
-    <version>1.0.0</version>
+    <artifactId>brinvex-investperf</artifactId>
+    <version>1.0.7</version>
 
     <properties>
         <java.version>23</java.version>
@@ -23,8 +23,8 @@
         <github-site-maven-plugin.version>0.11</github-site-maven-plugin.version>
         <github.global.server>github</github.global.server>
 
-        <brinvex-finance-types.version>1.0.0</brinvex-finance-types.version>
-        <brinvex-util-java.version>1.0.3</brinvex-util-java.version>
+        <brinvex-fintypes.version>1.0.1</brinvex-fintypes.version>
+        <brinvex-java.version>1.0.0</brinvex-java.version>
 
         <junit-jupiter.version>5.11.3</junit-jupiter.version>
     </properties>
@@ -38,14 +38,14 @@
     </licenses>
     <developers>
         <developer>
-            <name>Lukas</name>
-            <email>dev@brinvex.com</email>
+            <name>dev1@brinvex.com</name>
+            <email>dev1@brinvex.com</email>
             <organization>Brinvex</organization>
             <organizationUrl>https://brinvex.com</organizationUrl>
         </developer>
     </developers>
     <scm>
-        <url>https://github.com/brinvex/brinvex-investment-performance-analyzer</url>
+        <url>https://github.com/brinvex/brinvex-investperf</url>
     </scm>
     <organization>
         <name>Brinvex</name>
@@ -57,13 +57,13 @@
         <dependencies>
             <dependency>
                 <groupId>com.brinvex</groupId>
-                <artifactId>brinvex-finance-types</artifactId>
-                <version>${brinvex-finance-types.version}</version>
+                <artifactId>brinvex-fintypes</artifactId>
+                <version>${brinvex-fintypes.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.brinvex</groupId>
-                <artifactId>brinvex-util-java</artifactId>
-                <version>${brinvex-util-java.version}</version>
+                <artifactId>brinvex-java</artifactId>
+                <version>${brinvex-java.version}</version>
             </dependency>
 
             <dependency>
@@ -82,11 +82,11 @@
     <dependencies>
         <dependency>
             <groupId>com.brinvex</groupId>
-            <artifactId>brinvex-finance-types</artifactId>
+            <artifactId>brinvex-fintypes</artifactId>
         </dependency>
         <dependency>
             <groupId>com.brinvex</groupId>
-            <artifactId>brinvex-util-java</artifactId>
+            <artifactId>brinvex-java</artifactId>
         </dependency>
 
         <dependency>
@@ -162,4 +162,23 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>brinvex-repo</id>
+            <name>Brinvex Repository</name>
+            <url>https://github.com/brinvex/brinvex-repo/raw/main/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

@@ -1,6 +1,6 @@
-package com.brinvex.ipa.internal;
+package com.brinvex.investperf.internal;
 
-import com.brinvex.finance.types.vo.DateAmount;
+import com.brinvex.fintypes.vo.DateAmount;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
