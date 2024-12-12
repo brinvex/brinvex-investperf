@@ -3,7 +3,7 @@
 The _Brinvex Investment Performance Analyzer_ (technically named _brinvex-investperf_) 
 is a compact Java library designed for calculating and analyzing financial investment performance.
 
-The following example demonstrates how easily and fluently one can use the tool to calculate 
+The following examples demonstrates how easily and fluently one can use the tool to calculate 
 and analyze financial investment performance. 
 With minimal setup, you can define key parameters such as asset values and cash flows, 
 and quickly get back a detailed performance report, including TWR, MWR any many more. 
