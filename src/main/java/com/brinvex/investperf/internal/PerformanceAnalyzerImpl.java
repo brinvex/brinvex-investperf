@@ -40,10 +40,6 @@ import static java.util.Objects.requireNonNull;
 @SuppressWarnings("DuplicatedCode")
 public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
 
-    private final Function<String, TwrCalculator> twrCalculatorProvider = PerformanceCalculator::twrCalculator;
-
-    private final Function<String, MwrCalculator> mwrCalculatorProvider = PerformanceCalculator::mwrCalculator;
-
     @Override
     public SequencedCollection<PerfAnalysis> analyzePerformance(PerfAnalysisRequest req) {
         Frequency frequency = req.resultFrequency();
@@ -56,8 +52,8 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
         int resultRateScale = req.resultRateScale();
         int resultAmountScale = req.resultAmountScale();
         RoundingMode roundingMode = req.roundingMode();
-        TwrCalculator twrCalculator = twrCalculatorProvider.apply(req.twrCalculatorType().getSimpleName());
-        MwrCalculator mwrCalculator = mwrCalculatorProvider.apply(req.mwrCalculatorType().getSimpleName());
+        TwrCalculator twrCalculator = PerformanceCalculator.twrCalculator(req.twrCalculatorType());
+        MwrCalculator mwrCalculator = PerformanceCalculator.mwrCalculator(req.mwrCalculatorType());
         boolean calculateTrailingAvgProfit1Y = req.calculateTrailingAvgProfit1Y();
         boolean calculateTrailingAvgFlow1Y = req.calculateTrailingAvgFlow1Y();
         boolean calculatePeriodIncome = req.calculatePeriodIncome();
