@@ -1,7 +1,9 @@
 ## Brinvex Investment Performance Analyzer
 
 The _Brinvex Investment Performance Analyzer_ (technically named _brinvex-investperf_) 
-is a compact Java library designed for calculating and analyzing financial investment performance.
+is a compact Java library designed for calculating and analyzing financial investment performance,
+guided by the principles of the _Global Investment Performance Standards (GIPS)_ 
+to ensure accuracy and consistency.
 
 The following examples demonstrate how easily and fluently one can use the tool to calculate 
 and analyze financial investment performance. 
