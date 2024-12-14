@@ -1,4 +1,4 @@
-module test.brinvex.investperf {
+module test.com.brinvex.investperf {
     requires com.brinvex.investperf;
     requires org.junit.jupiter.api;
     requires org.junit.jupiter.engine;
