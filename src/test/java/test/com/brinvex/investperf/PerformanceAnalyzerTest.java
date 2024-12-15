@@ -7,7 +7,7 @@ import com.brinvex.investperf.api.PerformanceAnalyzer;
 import com.brinvex.investperf.api.PerformanceCalculator.LinkedModifiedDietzTwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.TrueTwrCalculator;
-import com.brinvex.util.java.collection.CollectionPrintUtil;
+import com.brinvex.java.collection.CollectionPrintUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

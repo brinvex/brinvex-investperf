@@ -3,7 +3,7 @@ package com.brinvex.investperf.internal;
 import com.brinvex.investperf.api.FlowTiming;
 import com.brinvex.investperf.api.PerfCalcRequest;
 import com.brinvex.investperf.api.PerformanceCalculator;
-import com.brinvex.util.java.validation.Assert;
+import com.brinvex.java.validation.Assert;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,8 +12,8 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.function.Function;
 
-import static com.brinvex.util.java.collection.CollectionUtil.rangeSafeHeadMap;
-import static com.brinvex.util.java.collection.CollectionUtil.rangeSafeTailMap;
+import static com.brinvex.java.collection.CollectionUtil.rangeSafeHeadMap;
+import static com.brinvex.java.collection.CollectionUtil.rangeSafeTailMap;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 import static java.util.Objects.requireNonNull;

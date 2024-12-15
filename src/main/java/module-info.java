@@ -1,6 +1,6 @@
 module com.brinvex.investperf {
     exports com.brinvex.investperf.api;
-    requires transitive brinvex.finance.types;
-    requires transitive brinvex.util.java;
+    requires transitive com.brinvex.finance.types;
+    requires transitive com.brinvex.java;
 }
 

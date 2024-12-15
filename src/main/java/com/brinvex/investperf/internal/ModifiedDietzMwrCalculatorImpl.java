@@ -3,7 +3,7 @@ package com.brinvex.investperf.internal;
 import com.brinvex.investperf.api.FlowTiming;
 import com.brinvex.investperf.api.PerfCalcRequest;
 import com.brinvex.investperf.api.PerformanceCalculator;
-import com.brinvex.util.java.Num;
+import com.brinvex.java.Num;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

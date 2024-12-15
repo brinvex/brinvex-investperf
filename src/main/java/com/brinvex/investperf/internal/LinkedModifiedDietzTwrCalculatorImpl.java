@@ -13,8 +13,8 @@ import java.util.SortedMap;
 import java.util.function.Function;
 
 import static com.brinvex.investperf.api.AnnualizationOption.DO_NOT_ANNUALIZE;
-import static com.brinvex.util.java.collection.CollectionUtil.rangeSafeSubMap;
-import static com.brinvex.util.java.DateUtil.minDate;
+import static com.brinvex.java.collection.CollectionUtil.rangeSafeSubMap;
+import static com.brinvex.java.DateUtil.minDate;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 

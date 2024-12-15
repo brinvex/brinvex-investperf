@@ -23,8 +23,8 @@
         <github-site-maven-plugin.version>0.11</github-site-maven-plugin.version>
         <github.global.server>github</github.global.server>
 
-        <brinvex-finance-types.version>1.0.0</brinvex-finance-types.version>
-        <brinvex-util-java.version>1.0.4</brinvex-util-java.version>
+        <brinvex-finance-types.version>1.0.1</brinvex-finance-types.version>
+        <brinvex-java.version>1.0.0</brinvex-java.version>
 
         <junit-jupiter.version>5.11.3</junit-jupiter.version>
     </properties>
@@ -38,8 +38,8 @@
     </licenses>
     <developers>
         <developer>
-            <name>Lukas</name>
-            <email>dev@brinvex.com</email>
+            <name>dev1@brinvex.com</name>
+            <email>dev1@brinvex.com</email>
             <organization>Brinvex</organization>
             <organizationUrl>https://brinvex.com</organizationUrl>
         </developer>
@@ -62,8 +62,8 @@
             </dependency>
             <dependency>
                 <groupId>com.brinvex</groupId>
-                <artifactId>brinvex-util-java</artifactId>
-                <version>${brinvex-util-java.version}</version>
+                <artifactId>brinvex-java</artifactId>
+                <version>${brinvex-java.version}</version>
             </dependency>
 
             <dependency>
@@ -86,7 +86,7 @@
         </dependency>
         <dependency>
             <groupId>com.brinvex</groupId>
-            <artifactId>brinvex-util-java</artifactId>
+            <artifactId>brinvex-java</artifactId>
         </dependency>
 
         <dependency>
