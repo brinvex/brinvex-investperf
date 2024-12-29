@@ -80,6 +80,8 @@ BigDecimal twrReturn = twrCalculator.calculateReturn(PerfCalcRequest.builder()
         .build());
 assertEquals("19.6053", twrReturn.toPlainString());
 ````
+#### Time-Weighted Rate of Return - Distorting effects of contributions
+See the demo spreadsheet:  ```Demo_TWR_Distorting_effects_of_contributions.xlsx```
 
 ### Modified Dietz Money-Weighted Rate of Return Calculator
 
