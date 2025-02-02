@@ -21,7 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <github-site-maven-plugin.version>0.11</github-site-maven-plugin.version>
-        <github.global.server>github</github.global.server>
+        <github.global.server>github-pubrepo-brinvex</github.global.server>
 
         <brinvex-fintypes.version>1.0.1</brinvex-fintypes.version>
         <brinvex-java.version>1.0.0</brinvex-java.version>
@@ -144,7 +144,7 @@
                     <branch>refs/heads/main</branch>
                     <includes><include>**/*</include></includes>
                     <!-- GitHub repo name -->
-                    <repositoryName>brinvex-repo</repositoryName>
+                    <repositoryName>brinvex-pubrepo</repositoryName>
                     <!-- GitHub username  -->
                     <repositoryOwner>brinvex</repositoryOwner>
                     <merge>true</merge>
@@ -173,9 +173,9 @@
             </snapshots>
         </repository>
         <repository>
-            <id>brinvex-repo</id>
-            <name>Brinvex Repository</name>
-            <url>https://github.com/brinvex/brinvex-repo/raw/main/</url>
+            <id>github-pubrepo-brinvex</id>
+            <name>Github Public Repository - Brinvex</name>
+            <url>https://github.com/brinvex/brinvex-pubrepo/raw/main/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

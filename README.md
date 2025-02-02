@@ -154,9 +154,9 @@ https://www.gipsstandards.org
 </properties>
 
 <repository>
-    <id>repository.brinvex</id>
-    <name>Brinvex Repository</name>
-    <url>https://github.com/brinvex/brinvex-repo/raw/main/</url>
+    <id>github-pubrepo-brinvex</id>
+    <name>Github Public Repository - Brinvex</name>
+    <url>https://github.com/brinvex/brinvex-pubrepo/raw/main/</url>
     <snapshots>
         <enabled>false</enabled>
     </snapshots>
