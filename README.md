@@ -150,7 +150,7 @@ https://www.gipsstandards.org
 ## Maven and JPMS Setup
 ````
 <properties>
-     <brinvex-investperf.version>1.0.7</brinvex-investperf.version>
+     <brinvex-investperf.version>1.1.0</brinvex-investperf.version>
 </properties>
 
 <repository>
