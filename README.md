@@ -38,22 +38,22 @@ List<PerfAnalysis> perfAnalyses = PerformanceAnalyzer.INSTANCE.analyzePerformanc
     .build());
 ````
 
-|                        |  2023-01 | 2023-02 | 2023-03 |
-|------------------------|---------:|--------:|--------:|
-| Period Start Value     |   100000 |   98000 |  117000 |
-| Period End Value       |    98000 |  117000 |  120000 |
-| Period Flow            |     2000 |    -500 |       0 |
-| Period TWR             |   -3.97% |  20.04% |   2.56% |
-| Cumulative TWR         |   -3.97% |  15.27% |  18.23% |
-| **Annualized TWR**     |   -3.97% |  15.27% |  18.23% |
-| Period MWR             |   -3.97% |  20.04% |   2.56% |
-| Cumulative MWR         |   -3.97% |  15.34% |  18.28% |
-| **Annualized MWR**     |   -3.97% |  15.34% |  18.28% |
-| Total Contribution     |   102000 |  101500 |  101500 |
-| Period Profit          |    -4000 |   19500 |    3000 |
-| Total Profit           |    -4000 |   15500 |   18500 |
-| Trailing Avg Profit 1Y | -4000.00 | 7750.00 | 6166.67 |
-| Trailing Avg Flow 1Y   |  2000.00 |  750.00 |  500.00 |
+|                        | 2023-01 | 2023-02 | 2023-03 |
+|------------------------|--------:|--------:|--------:|
+| Period Start Value     |  100000 |   98000 |  117000 |
+| Period End Value       |   98000 |  117000 |  120000 |
+| Period Flow            |    2000 |    -500 |       0 |
+| Period TWR             |  -3.97% |  20.04% |   2.56% |
+| Cumulative TWR         |  -3.97% |  15.27% |  18.23% |
+| **Annualized TWR**     |  -3.97% |  15.27% |  18.23% |
+| Period MWR             |  -3.97% |  20.04% |   2.56% |
+| Cumulative MWR         |  -3.97% |  15.34% |  18.28% |
+| **Annualized MWR**     |  -3.97% |  15.34% |  18.28% |
+| Total Contribution     |  102000 |  101500 |  101500 |
+| Period Profit          |   -4000 |   19500 |    3000 |
+| Total Profit           |   -4000 |   15500 |   18500 |
+| Trailing Avg Profit 1Y | -333.00 | 1292.00 | 1542.67 |
+| Trailing Avg Flow 1Y   |  167.00 |  125.00 |  125.00 |
 
 ### True Time-Weighted Rate of Return Calculator
 _True Time-Weighted Return (TWR)_  is often the preferred method for evaluating portfolio performance

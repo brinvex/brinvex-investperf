@@ -278,7 +278,10 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                 BigDecimal trailingAvgProfit1Y;
                 if (calculateTrailingAvgProfit1Y) {
                     trailingProfits1Y.put(periodStartDateIncl, periodProfit);
-                    trailingAvgProfit1Y = Num.avg(trailingProfits1Y.values(), resultAmountScale, roundingMode);
+                    trailingAvgProfit1Y = trailingProfits1Y.values()
+                            .stream()
+                            .reduce(ZERO, BigDecimal::add)
+                            .divide(BigDecimal.valueOf(periodFrequencyPerYear), resultAmountScale, roundingMode);
                 } else {
                     trailingAvgProfit1Y = null;
                 }
@@ -286,7 +289,10 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                 BigDecimal trailingAvgFlow1Y;
                 if (calculateTrailingAvgFlow1Y) {
                     trailingFlows1Y.put(periodStartDateIncl, periodFlowSum);
-                    trailingAvgFlow1Y = Num.avg(trailingFlows1Y.values(), resultAmountScale, roundingMode);
+                    trailingAvgFlow1Y = trailingFlows1Y.values()
+                            .stream()
+                            .reduce(ZERO, BigDecimal::add)
+                            .divide(BigDecimal.valueOf(periodFrequencyPerYear), resultAmountScale, roundingMode);
                 } else {
                     trailingAvgFlow1Y = null;
                 }
@@ -298,7 +304,10 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                     periodIncomeSum = periodIncomes.values().stream().reduce(ZERO, BigDecimal::add);
                     if (calculateTrailingAvgIncome1Y) {
                         trailingIncomes1Y.put(periodStartDateIncl, periodIncomeSum);
-                        trailingAvgIncome1Y = Num.avg(trailingIncomes1Y.values(), resultAmountScale, roundingMode);
+                        trailingAvgIncome1Y = trailingIncomes1Y.values()
+                                .stream()
+                                .reduce(ZERO, BigDecimal::add)
+                                .divide(BigDecimal.valueOf(periodFrequencyPerYear), resultAmountScale, roundingMode);
                     } else {
                         trailingAvgIncome1Y = null;
                     }
