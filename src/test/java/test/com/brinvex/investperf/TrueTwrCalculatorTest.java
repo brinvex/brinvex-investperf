@@ -164,8 +164,14 @@ class TrueTwrCalculatorTest {
                 .build());
         assertEquals("1.000000", ret12.toPlainString());
 
-        BigDecimal ret13 = PerformanceCalculator.twrCalculator().calculateReturn(calcReqBuilder.copy()
-                .flowTiming(BEGINNING_OF_DAY)
+    }
+
+    @Test
+    void twr3() {
+        BigDecimal ret13 = PerformanceCalculator.twrCalculator().calculateReturn(PerfCalcRequest.builder()
+                .startDateIncl(parse("2023-01-01"))
+                .endDateIncl(parse("2024-12-31"))
+                .annualization(DO_NOT_ANNUALIZE)
                 .flowTiming(END_OF_DAY)
                 .startAssetValueExcl(new BigDecimal("1000"))
                 .endAssetValueIncl(BigDecimal.ZERO)
@@ -175,11 +181,10 @@ class TrueTwrCalculatorTest {
                 ))
                 .build());
         assertEquals("1.000000", ret13.toPlainString());
-
     }
 
     @Test
-    void twr3() {
+    void twr4() {
         BigDecimal ret13 = PerformanceCalculator.twrCalculator().calculateReturn(PerfCalcRequest.builder()
                 .startDateIncl(parse("2023-01-01"))
                 .endDateIncl(parse("2024-12-31"))
@@ -197,7 +202,27 @@ class TrueTwrCalculatorTest {
                 ))
                 .build());
         assertEquals("0.000000", ret13.toPlainString());
+    }
 
+    @Test
+    void twr5() {
+        BigDecimal ret13 = PerformanceCalculator.twrCalculator().calculateReturn(PerfCalcRequest.builder()
+                .startDateIncl(parse("2023-01-01"))
+                .endDateIncl(parse("2024-12-31"))
+                .startAssetValueExcl(new BigDecimal("1000.00"))
+                .endAssetValueIncl(new BigDecimal("1030.00"))
+                .annualization(DO_NOT_ANNUALIZE)
+                .flowTiming(END_OF_DAY)
+                .assetValues(List.of(
+                        new DateAmount(parse("2023-01-03"), new BigDecimal("1010")),
+                        new DateAmount(parse("2023-01-05"), new BigDecimal("1030"))
+                ))
+                .flows(List.of(
+                        new DateAmount(parse("2023-01-03"), new BigDecimal("10")),
+                        new DateAmount(parse("2023-01-05"), new BigDecimal("20"))
+                ))
+                .build());
+        assertEquals("0.000000", ret13.toPlainString());
     }
 
     /*

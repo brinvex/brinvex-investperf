@@ -66,10 +66,11 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
         boolean calculateTrailingTwr10Y = req.calculateTrailingTwr10Y();
         Function<LocalDate, BigDecimal> assetValues = req.assetValues();
 
-        LocalDate calcStartDateIncl = maxDate(resultStartDateIncl, req.performanceMeasureStartDateIncl());
+        LocalDate calcStartDateIncl = minDate(maxDate(resultStartDateIncl, req.performanceMeasureStartDateIncl()), resultEndDateIncl.plusDays(1));
         LocalDate calcStartDateExcl = calcStartDateIncl.minusDays(1);
         LocalDate calcEndDateIncl = minDate(resultEndDateIncl, req.performanceMeasureEndDateIncl());
         LocalDate calcEndDateExcl = calcEndDateIncl.plusDays(1);
+        boolean calcIsNeeded = !calcStartDateIncl.isAfter(calcEndDateIncl);
 
         SortedMap<LocalDate, BigDecimal> flows = req.flows().apply(calcStartDateIncl, calcEndDateIncl);
         if (flows == null) {
@@ -104,7 +105,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                 LocalDate periodEndDateExcl = periodEndDateIncl.plusDays(1);
                 String periodCaption = frequency.caption(periodStartDateIncl);
                 BigDecimal periodEndValueIncl;
-                if (periodEndDateExcl.isBefore(calcStartDateIncl)) {
+                if (!calcIsNeeded || periodEndDateExcl.isBefore(calcStartDateIncl)) {
                     periodEndValueIncl = null;
                 } else {
                     periodEndValueIncl = assetValues.apply(periodEndDateIncl);
@@ -119,7 +120,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                 periodStartDateIncl = periodEndDateExcl;
             }
         }
-        if (!calcStartDateIncl.isAfter(calcEndDateIncl)) {
+        if (calcIsNeeded) {
             SortedMap<LocalDate, BigDecimal> iterativeForwardFlows = flows;
             SortedMap<LocalDate, BigDecimal> iterativeForwardIncomes = incomes;
             int periodFrequencyPerYear = frequency.countPerYear();

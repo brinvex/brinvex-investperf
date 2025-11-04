@@ -51,6 +51,19 @@ class PerformanceAnalyzerIbkrChallengeTest {
                     .collect(toTreeMap(DateAmount::date, DateAmount::amount));
         }
 
+        // Fill the asset-values gaps caused be weekends
+        {
+            LocalDate firstAssetValueDate = assetValues.firstKey();
+            LocalDate lastAssetValueDate = assetValues.lastKey();
+            BigDecimal currentAssetValue = assetValues.get(firstAssetValueDate);
+            for (LocalDate date = firstAssetValueDate; !date.isAfter(lastAssetValueDate); date = date.plusDays(1)) {
+                if (assetValues.containsKey(date)) {
+                    currentAssetValue = assetValues.get(date);
+                }
+                assetValues.put(date, currentAssetValue);
+            }
+        }
+
         List<DateAmount> flows;
         try (Stream<String> lines = Files.lines(TEST_DATASET1_DIR.resolve("flows.txt"))) {
             flows = lines
@@ -75,7 +88,7 @@ class PerformanceAnalyzerIbkrChallengeTest {
                 .resultStartDateIncl(startDateIncl)
                 .resultEndDateIncl(endDateIncl)
                 .flows(eurFlows)
-                .assetValues(date -> assetValues.floorEntry(date).getValue())
+                .assetValues(assetValues.entrySet().stream().map(DateAmount::new).toList())
                 .twrFlowTiming(BEGINNING_OF_DAY)
                 .mwrFlowTiming(END_OF_DAY)
                 .twrCalculatorType(PerformanceCalculator.TrueTwrCalculator.class)

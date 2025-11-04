@@ -803,7 +803,7 @@ public class PerformanceAnalyzerTest {
                 .resultStartDateIncl(parse("2023-01-01"))
                 .resultEndDateIncl(parse("2024-03-31"))
                 .performanceMeasureStartDateIncl(parse("2024-08-01"))
-                .performanceMeasureEndDateIncl(now())
+                .performanceMeasureEndDateIncl(parse("2025-10-31"))
                 .assetValues(List.of(
                         new DateAmount("2022-12-31", "0"),
                         new DateAmount("2023-01-31", "0"),
@@ -849,10 +849,6 @@ public class PerformanceAnalyzerTest {
                 2024-01;     null;   null;    null;   null;   null;   null;   null;   null;       null;    null;    null;         null;         null;    null;         null;     null;     null;     null;     null;      null
                 2024-02;     null;   null;    null;   null;   null;   null;   null;   null;       null;    null;    null;         null;         null;    null;         null;     null;     null;     null;     null;      null
                 2024-03;     null;   null;    null;   null;   null;   null;   null;   null;       null;    null;    null;         null;         null;    null;         null;     null;     null;     null;     null;      null
-                2024-04;     null;   null;    null;   null;   null;   null;   null;   null;       null;    null;    null;         null;         null;    null;         null;     null;     null;     null;     null;      null
-                2024-05;     null;   null;    null;   null;   null;   null;   null;   null;       null;    null;    null;         null;         null;    null;         null;     null;     null;     null;     null;      null
-                2024-06;     null;   null;    null;   null;   null;   null;   null;   null;       null;    null;    null;         null;         null;    null;         null;     null;     null;     null;     null;      null
-                2024-07;     null;   null;    null;   null;   null;   null;   null;   null;       null;    null;    null;         null;         null;    null;         null;     null;     null;     null;     null;      null
                 """;
         String actual = perfAnalysesToGridString(perfAnalyses);
         assertEqualsWithMultilineMsg(expected, actual);
