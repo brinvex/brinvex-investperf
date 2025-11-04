@@ -173,7 +173,7 @@ The library supports JPMS and exports the module named ````com.brinvex.investper
 
 ## Requirements
 
-- Java 23 or above
+- Java 25 or above
 
 ## License
 
