@@ -32,7 +32,7 @@ import static test.com.brinvex.investperf.PerformanceAnalyzerTest.assertEqualsWi
 
 class PerformanceAnalyzerIbkrChallengeTest {
 
-    private static final Path TEST_DATASET1_DIR = Path.of("v:/prj/bx/bx-investperf/test-data/test-dataset1/");
+    private static final Path TEST_DATASET1_DIR = Path.of("v:/prj/bx-investperf/test-data/test-dataset1/");
 
     private static TreeMap<LocalDate, BigDecimal> assetValues;
 
