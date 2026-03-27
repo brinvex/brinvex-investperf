@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PerformanceCalculatorTest {
 
-    private static final TrueTwrCalculator trueTwrCalculator = PerformanceCalculator.truetwrCalculator();
+    private static final TrueTwrCalculator trueTwrCalculator = PerformanceCalculator.trueTwrCalculator();
 
     private static final ModifiedDietzMwrCalculator modifiedDietzMwrCalculator = PerformanceCalculator.modifiedDietzMwrCalculator();
 

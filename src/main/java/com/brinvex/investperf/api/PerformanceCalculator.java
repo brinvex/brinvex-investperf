@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public interface PerformanceCalculator {
 
-    static TrueTwrCalculator truetwrCalculator() {
+    static TrueTwrCalculator trueTwrCalculator() {
         return TrueTwrCalculatorImpl.INSTANCE;
     }
 
@@ -21,12 +21,12 @@ public interface PerformanceCalculator {
     }
 
     static TwrCalculator twrCalculator() {
-        return PerformanceCalculator.truetwrCalculator();
+        return PerformanceCalculator.trueTwrCalculator();
     }
 
     static TwrCalculator twrCalculator(String twrCalculatorName) {
         return switch (twrCalculatorName) {
-            case "TrueTwrCalculator" -> truetwrCalculator();
+            case "TrueTwrCalculator" -> trueTwrCalculator();
             case "LinkedModifiedDietzTwrCalculator" -> linkedModifiedDietzTwrCalculator();
             case "TwrCalculator" -> twrCalculator();
             default -> throw new IllegalStateException("Unexpected value: " + twrCalculatorName);
