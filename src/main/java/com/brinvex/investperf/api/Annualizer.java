@@ -32,4 +32,17 @@ public interface Annualizer {
             BigDecimal cumulGrowthFactor,
             int fullYears
     );
+
+    double annualizeGrowthFactor(
+            AnnualizationOption annualizationOption,
+            double cumulGrowthFactor,
+            LocalDate startDateIncl,
+            LocalDate endDateIncl
+    );
+
+    double annualizeGrowthFactor(
+            AnnualizationOption annualizationOption,
+            double cumulGrowthFactor,
+            int fullYears
+    );
 }

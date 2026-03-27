@@ -68,7 +68,7 @@ public class AnnualizerImpl implements Annualizer {
                 return cumulGrowthFactor;
             }
         }
-        if (fullYears == 0) {
+        if (fullYears <= 0) {
             throw new IllegalArgumentException("fullYears must be positive, given: %s".formatted(fullYears));
         }
         if (fullYears == 1) {
@@ -78,5 +78,65 @@ public class AnnualizerImpl implements Annualizer {
         double exponent = 1.0 / fullYears;
         return BigDecimal.valueOf(Math.pow(cumGrowthFactor, exponent));
     }
+
+    @Override
+    public double annualizeGrowthFactor(AnnualizationOption annualizationOption, double cumulGrowthFactor, LocalDate startDateIncl, LocalDate endDateIncl) {
+        if (annualizationOption == AnnualizationOption.DO_NOT_ANNUALIZE) {
+            return cumulGrowthFactor;
+        }
+        if (cumulGrowthFactor == 0.0) {
+            return 0.0;
+        }
+        if (cumulGrowthFactor == 1.0) {
+            return cumulGrowthFactor;
+        }
+        LocalDate endDateExcl = endDateIncl.plusDays(1);
+        long fullYears = ChronoUnit.YEARS.between(startDateIncl, endDateExcl);
+        if (fullYears < 0) {
+            throw new IllegalArgumentException("startDateIncl must be before endDateExcl, given: %s, %s".formatted(startDateIncl, endDateExcl));
+        }
+        long days = ChronoUnit.DAYS.between(startDateIncl.plusYears(fullYears), endDateExcl);
+        if (annualizationOption == AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR) {
+            if (fullYears == 0 || (fullYears == 1 && days == 0)) {
+                return cumulGrowthFactor;
+            }
+        }
+        if (fullYears == 0 && days == 0) {
+            throw new IllegalArgumentException("startDateIncl must be before endDateExcl, given: %s, %s".formatted(startDateIncl, endDateExcl));
+        }
+        double exponent = 1.0 / (fullYears + (days / 365.0));
+        return Math.pow(cumulGrowthFactor, exponent);
+    }
+
+    @Override
+    public double annualizeGrowthFactor(
+            AnnualizationOption annualizationOption,
+            double cumulGrowthFactor,
+            int fullYears
+    ) {
+        if (annualizationOption == AnnualizationOption.DO_NOT_ANNUALIZE) {
+            return cumulGrowthFactor;
+        }
+        if (cumulGrowthFactor == 0.0) {
+            return 0.0;
+        }
+        if (cumulGrowthFactor == 1.0) {
+            return cumulGrowthFactor;
+        }
+        if (annualizationOption == AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR) {
+            if (fullYears == 0 || fullYears == 1) {
+                return cumulGrowthFactor;
+            }
+        }
+        if (fullYears <= 0) {
+            throw new IllegalArgumentException("fullYears must be positive, given: %s".formatted(fullYears));
+        }
+        if (fullYears == 1) {
+            return cumulGrowthFactor;
+        }
+        double exponent = 1.0 / fullYears;
+        return Math.pow(cumulGrowthFactor, exponent);
+    }
+
 
 }
