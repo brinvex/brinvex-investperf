@@ -5,8 +5,8 @@ import com.brinvex.investperf.api.Annualizer;
 import com.brinvex.investperf.api.FlowTiming;
 import com.brinvex.investperf.api.PerfCalcRequest;
 import com.brinvex.investperf.api.PerformanceCalculator;
-import com.brinvex.java.Num;
-import com.brinvex.java.collection.CollectionUtil;
+import com.brinvex.investperf.internal.util.Num;
+import com.brinvex.investperf.internal.util.CollectionUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -44,7 +44,7 @@ abstract class BaseCalculatorImpl implements PerformanceCalculator {
                         flows = CollectionUtil.rangeSafeHeadMap(flows, lastFlowDate);
                     }
                 }
-                default -> throw new IllegalStateException("Unexpected value: " + flowTiming);
+                default -> throw new IllegalArgumentException("Unexpected value: " + flowTiming);
             }
         }
 

@@ -5,15 +5,15 @@ import com.brinvex.investperf.api.PerfAnalysis;
 import com.brinvex.investperf.api.PerfAnalysisRequest;
 import com.brinvex.investperf.api.PerformanceAnalyzer;
 import com.brinvex.investperf.api.PerformanceCalculator;
-import com.brinvex.java.IOCallUtil;
-import com.brinvex.java.Num;
-import com.brinvex.java.collection.CollectionPrintUtil;
+import test.com.brinvex.investperf.util.IOCallUtil;
+import test.com.brinvex.investperf.util.CollectionPrintUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
 import static com.brinvex.investperf.api.FlowTiming.END_OF_DAY;
-import static com.brinvex.java.collection.Collectors.toTreeMap;
+import static test.com.brinvex.investperf.util.Collectors.toTreeMap;
 import static java.time.LocalDate.parse;
 import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -105,6 +105,10 @@ class PerformanceAnalyzerIbkrChallengeTest {
         assertEqualsWithMultilineMsg(expected, actual);
     }
 
+    private static BigDecimal setScale2(BigDecimal bd) {
+        return bd == null ? null : bd.setScale(2, RoundingMode.HALF_UP);
+    }
+
     private static String perfAnalysesToGridString(SequencedCollection<PerfAnalysis> perfAnalyses) {
         return CollectionPrintUtil.prettyPrintCollection(perfAnalyses,
                 List.of(
@@ -119,13 +123,13 @@ class PerformanceAnalyzerIbkrChallengeTest {
                 ),
                 List.of(
                         PerfAnalysis::periodCaption,
-                        perfAnalysis -> Num.setScale2(perfAnalysis.periodStartAssetValueExcl()),
-                        perfAnalysis -> Num.setScale2(perfAnalysis.periodEndAssetValueIncl()),
-                        perfAnalysis -> Num.setScale2(perfAnalysis.periodFlow()),
+                        perfAnalysis -> setScale2(perfAnalysis.periodStartAssetValueExcl()),
+                        perfAnalysis -> setScale2(perfAnalysis.periodEndAssetValueIncl()),
+                        perfAnalysis -> setScale2(perfAnalysis.periodFlow()),
                         PerfAnalysis::cumulativeTwr,
                         PerfAnalysis::cumulativeMwr,
-                        perfAnalysis -> Num.setScale2(perfAnalysis.periodProfit()),
-                        perfAnalysis -> Num.setScale2(perfAnalysis.totalProfit())
+                        perfAnalysis -> setScale2(perfAnalysis.periodProfit()),
+                        perfAnalysis -> setScale2(perfAnalysis.totalProfit())
                 )
         );
     }

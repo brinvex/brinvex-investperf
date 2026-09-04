@@ -10,9 +10,8 @@ import com.brinvex.investperf.api.PerformanceAnalyzer;
 import com.brinvex.investperf.api.PerformanceCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.MwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.TwrCalculator;
-import com.brinvex.java.LimitedLinkedMap;
-import com.brinvex.java.Num;
-import com.brinvex.java.validation.Assert;
+import com.brinvex.investperf.internal.util.LimitedLinkedMap;
+import com.brinvex.investperf.internal.util.Num;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,15 +26,14 @@ import java.util.function.Function;
 import static com.brinvex.investperf.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
 import static com.brinvex.investperf.api.AnnualizationOption.DO_NOT_ANNUALIZE;
 import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
-import static com.brinvex.java.DateUtil.maxDate;
-import static com.brinvex.java.DateUtil.minDate;
-import static com.brinvex.java.NullUtil.nullSafe;
-import static com.brinvex.java.collection.CollectionUtil.rangeSafeHeadMap;
-import static com.brinvex.java.collection.CollectionUtil.rangeSafeTailMap;
+import static com.brinvex.investperf.internal.util.DateUtil.maxDate;
+import static com.brinvex.investperf.internal.util.DateUtil.minDate;
+import static com.brinvex.investperf.internal.util.NullUtil.nullSafe;
+import static com.brinvex.investperf.internal.util.CollectionUtil.rangeSafeHeadMap;
+import static com.brinvex.investperf.internal.util.CollectionUtil.rangeSafeTailMap;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
 import static java.util.Collections.emptySortedMap;
-import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("DuplicatedCode")
 public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
@@ -77,22 +75,30 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
             flows = emptySortedMap();
         } else if (!flows.isEmpty()) {
             Entry<LocalDate, BigDecimal> firstFlow = flows.firstEntry();
-            Assert.isTrue(!firstFlow.getKey().isBefore(calcStartDateIncl),
-                    () -> "firstFlow must not be before calcStartDateIncl; %s, %s".formatted(firstFlow, calcStartDateExcl));
+            if (firstFlow.getKey().isBefore(calcStartDateIncl)) {
+                throw new IllegalArgumentException("firstFlow must not be before calcStartDateIncl; %s, %s"
+                        .formatted(firstFlow, calcStartDateExcl));
+            }
             Entry<LocalDate, BigDecimal> lastFlow = flows.lastEntry();
-            Assert.isTrue(!lastFlow.getKey().isAfter(calcEndDateIncl),
-                    () -> "lastFlow must not be after calcEndDateIncl; %s, %s".formatted(lastFlow, calcEndDateIncl));
+            if (lastFlow.getKey().isAfter(calcEndDateIncl)) {
+                throw new IllegalArgumentException("lastFlow must not be after calcEndDateIncl; %s, %s"
+                        .formatted(lastFlow, calcEndDateIncl));
+            }
         }
         SortedMap<LocalDate, BigDecimal> incomes = nullSafe(req.incomes(), _incomes -> _incomes.apply(calcStartDateIncl, calcEndDateIncl));
         if (incomes == null) {
             incomes = emptySortedMap();
         } else if (!incomes.isEmpty()) {
             Entry<LocalDate, BigDecimal> firstIncome = incomes.firstEntry();
-            Assert.isTrue(!firstIncome.getKey().isBefore(calcStartDateIncl),
-                    () -> "firstIncome must not be before calcStartDateIncl; %s, %s".formatted(firstIncome, calcStartDateExcl));
+            if (firstIncome.getKey().isBefore(calcStartDateIncl)) {
+                throw new IllegalArgumentException("firstIncome must not be before calcStartDateIncl; %s, %s"
+                        .formatted(firstIncome, calcStartDateExcl));
+            }
             Entry<LocalDate, BigDecimal> lastIncome = incomes.lastEntry();
-            Assert.isTrue(!lastIncome.getKey().isAfter(calcEndDateIncl),
-                    () -> "lastIncome must not be after calcEndDateIncl; %s, %s".formatted(lastIncome, calcEndDateIncl));
+            if (lastIncome.getKey().isAfter(calcEndDateIncl)) {
+                throw new IllegalArgumentException("lastIncome must not be after calcEndDateIncl; %s, %s"
+                        .formatted(lastIncome, calcEndDateIncl));
+            }
         }
 
         Annualizer annualizer = Annualizer.INSTANCE;
@@ -139,7 +145,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
 
             BigDecimal startValueExcl = assetValues.apply(calcStartDateExcl);
             if (startValueExcl == null) {
-                throw new IllegalStateException("startValueExcl must not be null, missing assetValue for calcStartDateExcl=%s"
+                throw new IllegalArgumentException("startValueExcl must not be null, missing assetValue for calcStartDateExcl=%s"
                         .formatted(calcStartDateExcl));
             }
             BigDecimal cumulTwrFactor = ONE;
@@ -152,11 +158,15 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                 LocalDate periodEndDateIncl = minDate(frequency.adjustToEndDateIncl(periodStartDateIncl), calcEndDateIncl);
                 LocalDate periodEndDateExcl = periodEndDateIncl.plusDays(1);
                 BigDecimal periodStartValueExcl = periodStartDateIncl.isEqual(calcStartDateIncl) ? startValueExcl : assetValues.apply(periodStartDateExcl);
-                requireNonNull(periodStartValueExcl, () -> "periodStartValueExcl must not be null, missing assetValue for periodStartDateExcl=%s"
-                        .formatted(periodStartDateExcl));
+                if (periodStartValueExcl == null) {
+                    throw new IllegalArgumentException("periodStartValueExcl must not be null, missing assetValue for periodStartDateExcl=%s"
+                            .formatted(periodStartDateExcl));
+                }
                 BigDecimal periodEndValueIncl = assetValues.apply(periodEndDateIncl);
-                requireNonNull(periodEndValueIncl, () -> "periodEndValueIncl must not be null, missing assetValue for periodEndDateIncl=%s"
-                        .formatted(periodEndDateIncl));
+                if (periodEndValueIncl == null) {
+                    throw new IllegalArgumentException("periodEndValueIncl must not be null, missing assetValue for periodEndDateIncl=%s"
+                            .formatted(periodEndDateIncl));
+                }
 
                 SortedMap<LocalDate, BigDecimal> periodFlows = rangeSafeHeadMap(iterativeForwardFlows, periodEndDateExcl);
 

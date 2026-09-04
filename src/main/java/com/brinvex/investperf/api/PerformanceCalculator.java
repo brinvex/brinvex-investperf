@@ -29,7 +29,7 @@ public interface PerformanceCalculator {
             case "TrueTwrCalculator" -> trueTwrCalculator();
             case "LinkedModifiedDietzTwrCalculator" -> linkedModifiedDietzTwrCalculator();
             case "TwrCalculator" -> twrCalculator();
-            default -> throw new IllegalStateException("Unexpected value: " + twrCalculatorName);
+            default -> throw new IllegalArgumentException("Unexpected value: " + twrCalculatorName);
         };
     }
 
@@ -41,7 +41,7 @@ public interface PerformanceCalculator {
         return switch (twrCalculatorName) {
             case "ModifiedDietzMwrCalculator" -> modifiedDietzMwrCalculator();
             case "MwrCalculator" -> mwrCalculator();
-            default -> throw new IllegalStateException("Unexpected value: " + twrCalculatorName);
+            default -> throw new IllegalArgumentException("Unexpected value: " + twrCalculatorName);
         };
     }
 

@@ -3,7 +3,7 @@ package com.brinvex.investperf.internal;
 import com.brinvex.investperf.api.FlowTiming;
 import com.brinvex.investperf.api.PerfCalcRequest;
 import com.brinvex.investperf.api.PerformanceCalculator;
-import com.brinvex.java.Num;
+import com.brinvex.investperf.internal.util.Num;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -62,7 +62,7 @@ public class ModifiedDietzMwrCalculatorImpl extends BaseCalculatorImpl implement
         }
         if (startValueExcl.compareTo(weightedFlowSum.negate()) <= 0) {
             //See https://en.wikipedia.org/wiki/Modified_Dietz_method#Negative_or_zero_average_capital
-            throw new IllegalStateException((
+            throw new IllegalArgumentException((
                     "Could not calculate ModifiedDietz return of given data: " +
                     "adjStartValueExcl=%s, adjEndValueIncl=%s, " +
                     "weightedFlowSum=%s, periodFlow=%s, " +

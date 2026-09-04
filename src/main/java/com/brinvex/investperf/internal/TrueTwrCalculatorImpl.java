@@ -3,7 +3,6 @@ package com.brinvex.investperf.internal;
 import com.brinvex.investperf.api.FlowTiming;
 import com.brinvex.investperf.api.PerfCalcRequest;
 import com.brinvex.investperf.api.PerformanceCalculator;
-import com.brinvex.java.validation.Assert;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,11 +11,10 @@ import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.function.Function;
 
-import static com.brinvex.java.collection.CollectionUtil.rangeSafeHeadMap;
-import static com.brinvex.java.collection.CollectionUtil.rangeSafeTailMap;
+import static com.brinvex.investperf.internal.util.CollectionUtil.rangeSafeHeadMap;
+import static com.brinvex.investperf.internal.util.CollectionUtil.rangeSafeTailMap;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.ZERO;
-import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("DuplicatedCode")
 public class TrueTwrCalculatorImpl extends BaseCalculatorImpl implements PerformanceCalculator.TrueTwrCalculator {
@@ -96,9 +94,10 @@ public class TrueTwrCalculatorImpl extends BaseCalculatorImpl implements Perform
                 subPeriodStartValue = startAssetValueExcl;
             } else {
                 subPeriodStartValue = assetValues.apply(subPeriodStartDateExcl);
-
-                Assert.notNull(subPeriodStartValue,
-                        () -> "subPeriodStartValue must not be null, missing assetValue for subPeriodStartDateExcl %s".formatted(subPeriodStartDateExcl));
+                if (subPeriodStartValue == null) {
+                    throw new IllegalArgumentException("subPeriodStartValue must not be null, missing assetValue for subPeriodStartDateExcl=%s"
+                            .formatted(subPeriodStartDateExcl));
+                }
             }
             if (i == periodCount) {
                 subPeriodEndDateIncl = endDateIncl;
@@ -106,9 +105,10 @@ public class TrueTwrCalculatorImpl extends BaseCalculatorImpl implements Perform
             } else {
                 subPeriodEndDateIncl = flows.firstKey().minusDays(1);
                 subPeriodEndValue = assetValues.apply(subPeriodEndDateIncl);
-
-                requireNonNull(subPeriodEndValue,
-                        () -> "subPeriodEndValue must not be null, missing assetValue for subPeriodEndDateIncl %s".formatted(subPeriodEndDateIncl));
+                if (subPeriodEndValue == null) {
+                    throw new IllegalArgumentException("subPeriodEndValue must not be null, missing assetValue for subPeriodEndDateIncl=%s"
+                            .formatted(subPeriodEndDateIncl));
+                }
             }
 
             BigDecimal subPeriodStartValueWithFlow = subPeriodStartValue.add(flow);
@@ -129,8 +129,9 @@ public class TrueTwrCalculatorImpl extends BaseCalculatorImpl implements Perform
                     //Bankruptcy
                     cumulGrowthFactor = ZERO;
                     break;
-                } else {
-                    Assert.isTrue(periodFactorSignum > 0);
+                } else if (periodFactorSignum < 0) {
+                    throw new IllegalArgumentException("periodFactor must not be negative; given: %s"
+                            .formatted(periodFactor));
                 }
             }
             cumulGrowthFactor = cumulGrowthFactor.multiply(periodFactor).setScale(calcScale, roundingMode);
@@ -181,9 +182,10 @@ public class TrueTwrCalculatorImpl extends BaseCalculatorImpl implements Perform
                 subPeriodStartValue = startAssetValueExcl;
             } else {
                 subPeriodStartValue = assetValues.apply(subPeriodStartDateExcl);
-
-                requireNonNull(subPeriodStartValue,
-                        () -> "subPeriodStartValue must not be null, missing assetValue for subPeriodStartDateExcl %s".formatted(subPeriodStartDateExcl));
+                if (subPeriodStartValue == null) {
+                    throw new IllegalArgumentException("subPeriodStartValue must not be null, missing assetValue for subPeriodStartDateExcl=%s"
+                            .formatted(subPeriodStartDateExcl));
+                }
             }
             if (i == periodCount) {
                 flow = ZERO;
@@ -194,9 +196,10 @@ public class TrueTwrCalculatorImpl extends BaseCalculatorImpl implements Perform
                 flow = flowEntry.getValue();
                 subPeriodEndDateIncl = flowEntry.getKey();
                 subPeriodEndValue = assetValues.apply(subPeriodEndDateIncl);
-
-                requireNonNull(subPeriodEndValue,
-                        () -> "subPeriodEndValue must not be null, missing assetValue for subPeriodEndDateIncl %s".formatted(subPeriodEndDateIncl));
+                if (subPeriodEndValue == null) {
+                    throw new IllegalArgumentException("subPeriodEndValue must not be null, missing assetValue for subPeriodEndDateIncl=%s"
+                            .formatted(subPeriodEndDateIncl));
+                }
             }
 
             BigDecimal subPeriodEndValueWithoutFlow = subPeriodEndValue.subtract(flow);
@@ -214,8 +217,9 @@ public class TrueTwrCalculatorImpl extends BaseCalculatorImpl implements Perform
                     //Bankruptcy
                     cumulGrowthFactor = ZERO;
                     break;
-                } else {
-                    Assert.isTrue(periodFactorSignum > 0);
+                } else if (periodFactorSignum < 0) {
+                    throw new IllegalArgumentException("periodFactor must not be negative; given: %s"
+                            .formatted(periodFactor));
                 }
             }
             cumulGrowthFactor = cumulGrowthFactor.multiply(periodFactor).setScale(calcScale, roundingMode);
