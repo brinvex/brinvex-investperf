@@ -1,6 +1,5 @@
 package com.brinvex.investperf.api;
 
-import com.brinvex.fintypes.vo.DateAmount;
 import com.brinvex.investperf.internal.RequestSanitizer;
 
 import java.math.BigDecimal;

@@ -1,7 +1,5 @@
 package com.brinvex.investperf.api;
 
-import com.brinvex.fintypes.enu.Frequency;
-import com.brinvex.fintypes.vo.DateAmount;
 import com.brinvex.investperf.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.MwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.TrueTwrCalculator;
@@ -93,9 +91,6 @@ public final class PerfAnalysisRequest {
         if (resultStartDateIncl.isAfter(resultEndDateIncl)) {
             throw new IllegalArgumentException("resultStartDateIncl must be before resultEndDateIncl, given: %s, %s"
                     .formatted(resultStartDateIncl, resultEndDateIncl));
-        }
-        if (resultFrequency == Frequency.DAY) {
-            throw new IllegalArgumentException("resultFrequency must not be DAY");
         }
         this.resultStartDateIncl = resultStartDateIncl;
         this.resultEndDateIncl = resultEndDateIncl;

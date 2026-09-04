@@ -23,7 +23,6 @@
         <github-site-maven-plugin.version>0.11</github-site-maven-plugin.version>
         <github.global.server>github-pubrepo-brinvex</github.global.server>
 
-        <brinvex-fintypes.version>1.6.1</brinvex-fintypes.version>
 
         <junit-jupiter.version>5.11.3</junit-jupiter.version>
     </properties>
@@ -54,11 +53,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>com.brinvex</groupId>
-                <artifactId>brinvex-fintypes</artifactId>
-                <version>${brinvex-fintypes.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -74,10 +68,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>com.brinvex</groupId>
-            <artifactId>brinvex-fintypes</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

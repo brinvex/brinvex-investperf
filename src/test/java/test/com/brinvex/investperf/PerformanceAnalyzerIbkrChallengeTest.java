@@ -1,6 +1,6 @@
 package test.com.brinvex.investperf;
 
-import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.DateAmount;
 import com.brinvex.investperf.api.PerfAnalysis;
 import com.brinvex.investperf.api.PerfAnalysisRequest;
 import com.brinvex.investperf.api.PerformanceAnalyzer;

@@ -1,6 +1,6 @@
 package test.com.brinvex.investperf;
 
-import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.DateAmount;
 import com.brinvex.investperf.api.PerfAnalysis;
 import com.brinvex.investperf.api.PerfAnalysisRequest;
 import com.brinvex.investperf.api.PerformanceAnalyzer;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.SequencedCollection;
 import java.util.TreeMap;
 
-import static com.brinvex.fintypes.enu.Frequency.MONTH;
+import static com.brinvex.investperf.api.Frequency.MONTH;
 import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
 import static com.brinvex.investperf.api.FlowTiming.END_OF_DAY;
 import static java.time.LocalDate.now;

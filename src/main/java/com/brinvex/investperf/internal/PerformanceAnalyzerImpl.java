@@ -1,6 +1,6 @@
 package com.brinvex.investperf.internal;
 
-import com.brinvex.fintypes.enu.Frequency;
+import com.brinvex.investperf.api.Frequency;
 import com.brinvex.investperf.api.Annualizer;
 import com.brinvex.investperf.api.FlowTiming;
 import com.brinvex.investperf.api.PerfAnalysis;

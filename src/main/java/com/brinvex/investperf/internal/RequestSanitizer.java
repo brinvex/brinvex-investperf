@@ -1,6 +1,6 @@
 package com.brinvex.investperf.internal;
 
-import com.brinvex.fintypes.vo.DateAmount;
+import com.brinvex.investperf.api.DateAmount;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
