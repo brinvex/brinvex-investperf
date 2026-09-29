@@ -67,6 +67,32 @@ public class LinkedModifiedDietzTwrCalculatorImpl extends BaseCalculatorImpl imp
                         .formatted(subPeriodStartDateExcl));
             }
 
+            /*
+            Modified Dietz cannot start from nothing. Until the next flow brings money in, nothing
+            is invested, so those days neither gain nor lose - the rule TrueTwr applies too.
+            */
+            BigDecimal startDayFlow = flowTiming == FlowTiming.BEGINNING_OF_DAY ? iterativeForwardFlows.get(subPeriodStartDateIncl) : null;
+            if (subPeriodStartValueExcl.add(startDayFlow == null ? ZERO : startDayFlow).compareTo(ZERO) == 0) {
+                SortedMap<LocalDate, BigDecimal> laterFlows = rangeSafeSubMap(iterativeForwardFlows,
+                        startDayFlow == null ? subPeriodStartDateIncl : subPeriodStartDateIncl.plusDays(1), endDateExcl);
+                LocalDate emptyEndDateIncl = laterFlows.isEmpty() ? endDateIncl : switch (flowTiming) {
+                    case BEGINNING_OF_DAY -> laterFlows.firstKey().minusDays(1);
+                    case END_OF_DAY -> laterFlows.firstKey();
+                };
+                if (laterFlows.isEmpty() || flowTiming == FlowTiming.BEGINNING_OF_DAY) {
+                    BigDecimal emptyEndValueIncl = emptyEndDateIncl.equals(endDateIncl) ? endAssetValueIncl : assetValues.apply(emptyEndDateIncl);
+                    if (emptyEndValueIncl == null || emptyEndValueIncl.compareTo(ZERO) != 0) {
+                        throw new IllegalArgumentException((
+                                "with nothing invested and no flow, the asset value must stay zero; " +
+                                "given: emptyEndValueIncl=%s, subPeriodStartDateIncl=%s, emptyEndDateIncl=%s")
+                                .formatted(emptyEndValueIncl, subPeriodStartDateIncl, emptyEndDateIncl));
+                    }
+                }
+                subPeriodStartDateIncl = emptyEndDateIncl.plusDays(1);
+                iterativeForwardFlows = rangeSafeSubMap(iterativeForwardFlows, subPeriodStartDateIncl, endDateExcl);
+                continue;
+            }
+
             LocalDate subPeriodEndDateIncl = minDate(frequency.adjustToEndDateIncl(subPeriodStartDateIncl), endDateIncl);
 
             LocalDate largeFlowDate;
