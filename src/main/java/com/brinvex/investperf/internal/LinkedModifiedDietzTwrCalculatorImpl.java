@@ -2,6 +2,7 @@ package com.brinvex.investperf.internal;
 
 import com.brinvex.investperf.api.Frequency;
 import com.brinvex.investperf.api.FlowTiming;
+import com.brinvex.investperf.api.LargeFlowRule;
 import com.brinvex.investperf.api.PerfCalcRequest;
 import com.brinvex.investperf.api.PerformanceCalculator;
 
@@ -37,7 +38,7 @@ public class LinkedModifiedDietzTwrCalculatorImpl extends BaseCalculatorImpl imp
         BigDecimal endAssetValueIncl = calcReq.endAssetValueIncl();
         Function<LocalDate, BigDecimal> assetValues = calcReq.assetValues();
         SortedMap<LocalDate, BigDecimal> flows = calcReq.flows();
-        int largeFlowLevelInPercent = calcReq.largeFlowLevelInPercent();
+        LargeFlowRule largeFlowRule = calcReq.largeFlowRule();
         FlowTiming flowTiming = calcReq.flowTiming();
         int calcScale = calcReq.calcScale();
         RoundingMode roundingMode = calcReq.roundingMode();
@@ -55,8 +56,6 @@ public class LinkedModifiedDietzTwrCalculatorImpl extends BaseCalculatorImpl imp
         LocalDate endDateExcl = endDateIncl.plusDays(1);
         LocalDate subPeriodStartDateIncl = startDateIncl;
         BigDecimal cumulTwrFactor = ONE;
-
-        BigDecimal largeFlowLevel = new BigDecimal(largeFlowLevelInPercent).divide(new BigDecimal("100"), calcScale, roundingMode);
 
         SortedMap<LocalDate, BigDecimal> iterativeForwardFlows = flows;
         while (!subPeriodStartDateIncl.isAfter(endDateIncl)) {
@@ -96,9 +95,10 @@ public class LinkedModifiedDietzTwrCalculatorImpl extends BaseCalculatorImpl imp
             LocalDate subPeriodEndDateIncl = minDate(frequency.adjustToEndDateIncl(subPeriodStartDateIncl), endDateIncl);
 
             LocalDate largeFlowDate;
-            if (subPeriodStartValueExcl.compareTo(ZERO) == 0) {
+            if (!(largeFlowRule instanceof LargeFlowRule.AbovePercent(int largeFlowPercent)) || subPeriodStartValueExcl.compareTo(ZERO) == 0) {
                 largeFlowDate = null;
             } else {
+                BigDecimal largeFlowLevel = new BigDecimal(largeFlowPercent).divide(new BigDecimal("100"), calcScale, roundingMode);
                 largeFlowDate = rangeSafeSubMap(iterativeForwardFlows, subPeriodStartDateIncl.plusDays(1), subPeriodEndDateIncl)
                         .entrySet()
                         .stream()

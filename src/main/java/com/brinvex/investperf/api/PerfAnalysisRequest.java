@@ -27,7 +27,7 @@ public final class PerfAnalysisRequest {
     private final FlowTiming mwrFlowTiming;
     private final String twrCalculatorType;
     private final String mwrCalculatorType;
-    private final int largeFlowLevelInPercent;
+    private final LargeFlowRule largeFlowRule;
     private final boolean resultRatesInPercent;
     private final int calcScale;
     private final int resultRateScale;
@@ -62,7 +62,7 @@ public final class PerfAnalysisRequest {
             String mwrCalculatorType,
             FlowTiming twrFlowTiming,
             FlowTiming mwrFlowTiming,
-            Integer largeFlowLevelInPercent,
+            LargeFlowRule largeFlowRule,
             Boolean resultRatesInPercent,
             Integer calcScale,
             Integer resultRateScale,
@@ -102,7 +102,10 @@ public final class PerfAnalysisRequest {
         this.twrCalculatorType = twrCalculatorType == null ? TrueTwrCalculator.class.getSimpleName() : twrCalculatorType;
         this.mwrCalculatorType = mwrCalculatorType == null ? ModifiedDietzMwrCalculator.class.getSimpleName() : mwrCalculatorType;
         this.resultRatesInPercent = resultRatesInPercent != null && resultRatesInPercent;
-        this.largeFlowLevelInPercent = largeFlowLevelInPercent == null ? 5 : largeFlowLevelInPercent;
+        if (largeFlowRule == null) {
+            throw new IllegalArgumentException("largeFlowRule must not be null");
+        }
+        this.largeFlowRule = largeFlowRule;
         this.calcScale = calcScale == null ? 20 : calcScale;
         this.resultRateScale = resultRateScale == null ? 6 : resultRateScale;
         this.resultAmountScale = resultAmountScale == null ? 2 : resultAmountScale;
@@ -210,8 +213,8 @@ public final class PerfAnalysisRequest {
         return this.mwrCalculatorType;
     }
 
-    public int largeFlowLevelInPercent() {
-        return this.largeFlowLevelInPercent;
+    public LargeFlowRule largeFlowRule() {
+        return this.largeFlowRule;
     }
 
     public boolean resultRatesInPercent() {
@@ -297,7 +300,7 @@ public final class PerfAnalysisRequest {
         private FlowTiming mwrFlowTiming;
         private String twrCalculatorType;
         private String mwrCalculatorType;
-        private Integer largeFlowLevelInPercent;
+        private LargeFlowRule largeFlowRule = LargeFlowRule.DEFAULT;
         private Boolean resultRatesInPercent;
         private Integer calcScale;
         private Integer resultRateScale;
@@ -409,7 +412,7 @@ public final class PerfAnalysisRequest {
                     mwrCalculatorType,
                     twrFlowTiming,
                     mwrFlowTiming,
-                    largeFlowLevelInPercent,
+                    largeFlowRule,
                     resultRatesInPercent,
                     calcScale,
                     resultRateScale,
@@ -486,8 +489,11 @@ public final class PerfAnalysisRequest {
             return this;
         }
 
-        public PerfAnalysisRequestBuilder largeFlowLevelInPercent(Integer largeFlowLevelInPercent) {
-            this.largeFlowLevelInPercent = largeFlowLevelInPercent;
+        /**
+         * Which flows are large. It is passed to every TWR calculation. Left unset, it is {@link LargeFlowRule#DEFAULT}.
+         */
+        public PerfAnalysisRequestBuilder largeFlowRule(LargeFlowRule largeFlowRule) {
+            this.largeFlowRule = largeFlowRule;
             return this;
         }
 

@@ -20,7 +20,7 @@ public final class PerfCalcRequest {
     private final BigDecimal endAssetValueIncl;
     private final Function<LocalDate, BigDecimal> assetValues;
     private final SortedMap<LocalDate, BigDecimal> flows;
-    private final int largeFlowLevelInPercent;
+    private final LargeFlowRule largeFlowRule;
     private final FlowTiming flowTiming;
     private final AnnualizationOption annualization;
     private final boolean resultInPercent;
@@ -38,7 +38,7 @@ public final class PerfCalcRequest {
             Collection<DateAmount> assetValuesCollection,
             Map<LocalDate, BigDecimal> flowsMap,
             Collection<DateAmount> flowsCollection,
-            Integer largeFlowLevelInPercent,
+            LargeFlowRule largeFlowRule,
             FlowTiming flowTiming,
             AnnualizationOption annualization,
             Boolean resultInPercent,
@@ -72,7 +72,10 @@ public final class PerfCalcRequest {
         this.endAssetValueIncl = endAssetValueIncl;
         this.startDateIncl = startDateIncl;
         this.endDateIncl = endDateIncl;
-        this.largeFlowLevelInPercent = largeFlowLevelInPercent == null ? 5 : largeFlowLevelInPercent;
+        if (largeFlowRule == null) {
+            throw new IllegalArgumentException("largeFlowRule must not be null");
+        }
+        this.largeFlowRule = largeFlowRule;
         this.flowTiming = flowTiming == null ? FlowTiming.BEGINNING_OF_DAY : flowTiming;
         this.annualization = annualization == null ? AnnualizationOption.DO_NOT_ANNUALIZE : annualization;
         this.resultInPercent = resultInPercent != null && resultInPercent;
@@ -108,7 +111,7 @@ public final class PerfCalcRequest {
         builder.endDateIncl = endDateIncl;
         builder.startAssetValueExcl = startAssetValueExcl;
         builder.endAssetValueIncl = endAssetValueIncl;
-        builder.largeFlowLevelInPercent = largeFlowLevelInPercent;
+        builder.largeFlowRule = largeFlowRule;
         builder.flowTiming = flowTiming;
         builder.annualization = annualization;
         builder.resultInPercent = resultInPercent;
@@ -144,8 +147,8 @@ public final class PerfCalcRequest {
         return this.flows;
     }
 
-    public int largeFlowLevelInPercent() {
-        return this.largeFlowLevelInPercent;
+    public LargeFlowRule largeFlowRule() {
+        return this.largeFlowRule;
     }
 
     public FlowTiming flowTiming() {
@@ -183,7 +186,7 @@ public final class PerfCalcRequest {
         private Collection<DateAmount> assetValuesCollection;
         private Map<LocalDate, BigDecimal> flowsMap;
         private Collection<DateAmount> flowsCollection;
-        private Integer largeFlowLevelInPercent;
+        private LargeFlowRule largeFlowRule = LargeFlowRule.DEFAULT;
         private FlowTiming flowTiming;
         private AnnualizationOption annualization;
         private Boolean resultInPercent;
@@ -238,7 +241,7 @@ public final class PerfCalcRequest {
                     assetValuesCollection,
                     flowsMap,
                     flowsCollection,
-                    largeFlowLevelInPercent,
+                    largeFlowRule,
                     flowTiming,
                     annualization,
                     resultInPercent,
@@ -253,7 +256,7 @@ public final class PerfCalcRequest {
             copy.endDateIncl = endDateIncl;
             copy.startAssetValueExcl = startAssetValueExcl;
             copy.endAssetValueIncl = endAssetValueIncl;
-            copy.largeFlowLevelInPercent = largeFlowLevelInPercent;
+            copy.largeFlowRule = largeFlowRule;
             copy.flowTiming = flowTiming;
             copy.annualization = annualization;
             copy.resultInPercent = resultInPercent;
@@ -288,8 +291,11 @@ public final class PerfCalcRequest {
             return this;
         }
 
-        public PerfCalcRequestBuilder largeFlowLevelInPercent(Integer largeFlowLevelInPercent) {
-            this.largeFlowLevelInPercent = largeFlowLevelInPercent;
+        /**
+         * Which flows are large. Left unset, it is {@link LargeFlowRule#DEFAULT}.
+         */
+        public PerfCalcRequestBuilder largeFlowRule(LargeFlowRule largeFlowRule) {
+            this.largeFlowRule = largeFlowRule;
             return this;
         }
 
