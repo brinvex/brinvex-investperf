@@ -1018,7 +1018,24 @@ public class PerformanceAnalyzerTest {
                 ));
     }
 
-    //todo 5
+    /*
+    An account closed long before the requested periods: nothing is measured, and the result holds
+    exactly the requested periods rather than every period since the close.
+    */
+    @Test
+    void measureWindowEndsBeforeResultStart() {
+        SequencedCollection<PerfAnalysis> perfAnalyses = PerformanceAnalyzer.INSTANCE.analyzePerformance(PerfAnalysisRequest.builder()
+                .resultStartDateIncl(parse("2026-08-01"))
+                .resultEndDateIncl(parse("2026-09-30"))
+                .performanceMeasureStartDateIncl(parse("2017-01-31"))
+                .performanceMeasureEndDateIncl(parse("2025-03-07"))
+                .assetValues(List.of())
+                .flows(List.of())
+                .resultFrequency(MONTH)
+                .build());
+        Assertions.assertEquals(List.of("2026-08", "2026-09"), perfAnalyses.stream().map(PerfAnalysis::periodCaption).toList());
+    }
+
     public static void assertEqualsWithMultilineMsg(String expected, String actual) {
         Assertions.assertEquals(expected, actual, () -> "\nExpected:\n%s\nActual:\n%s\n".formatted(expected, actual));
     }

@@ -439,7 +439,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
             }
         }
         {
-            LocalDate periodStartDateIncl = calcEndDateExcl;
+            LocalDate periodStartDateIncl = maxDate(calcEndDateExcl, resultStartDateIncl);
             while (!periodStartDateIncl.isAfter(resultEndDateIncl)) {
                 LocalDate periodEndDateIncl = minDate(frequency.adjustToEndDateIncl(periodStartDateIncl), resultEndDateIncl);
                 String periodCaption = frequency.caption(periodStartDateIncl);
