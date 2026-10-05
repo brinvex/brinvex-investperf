@@ -1036,6 +1036,84 @@ public class PerformanceAnalyzerTest {
         Assertions.assertEquals(List.of("2026-08", "2026-09"), perfAnalyses.stream().map(PerfAnalysis::periodCaption).toList());
     }
 
+    /*
+    A NAV that rises 5% every June and 10% over every calendar year, with no flows: the year to date
+    is 0% until June, 5% until December and 10% in December; a 4-year window holds four such years
+    once 48 months are measured. Only the windows asked for come back.
+    */
+    @Test
+    void ytdAndTrailing4Y() {
+        Map<LocalDate, BigDecimal> navs = new TreeMap<>();
+        BigDecimal yearStart = new BigDecimal("100");
+        navs.put(parse("2021-12-31"), yearStart);
+        for (LocalDate monthStart = parse("2022-01-01"); monthStart.isBefore(parse("2026-03-01")); monthStart = monthStart.plusMonths(1)) {
+            int month = monthStart.getMonthValue();
+            BigDecimal nav = month < 6 ? yearStart : yearStart.multiply(new BigDecimal(month < 12 ? "1.05" : "1.10"));
+            navs.put(monthStart.plusMonths(1).minusDays(1), nav);
+            if (month == 12) {
+                yearStart = nav;
+            }
+        }
+        /* February 2026 rises 5% as well, so the windows ending there are not whole years of the pattern. */
+        navs.put(parse("2026-02-28"), yearStart.multiply(new BigDecimal("1.05")));
+        PerfAnalysisRequest.PerfAnalysisRequestBuilder req = PerfAnalysisRequest.builder()
+                .resultEndDateIncl(parse("2026-02-28"))
+                .assetValues(navs)
+                .flows(List.of())
+                .resultRatesInPercent(true)
+                .resultRateScale(2)
+                .calculateYtdTwr(true)
+                .calculateTrailingTwr1Y(true)
+                .calculateTrailingTwr4Y(true)
+                .calculateTrailingTwr5Y(true);
+
+        SequencedCollection<PerfAnalysis> fromStart = PerformanceAnalyzer.INSTANCE.analyzePerformance(req
+                .resultStartDateIncl(parse("2022-01-01"))
+                .build());
+        assertEqualsWithMultilineMsg("""
+                 period; prdTwr; ytdTwr; trlTwr1Y; trlTwr2Y; trlTwr4Y; trlTwr5Y
+                2025-05;   0.00;   0.00;    10.00;     null;     null;     null
+                2025-06;   5.00;   5.00;    10.00;     null;     null;     null
+                2025-07;   0.00;   5.00;    10.00;     null;     null;     null
+                2025-08;   0.00;   5.00;    10.00;     null;     null;     null
+                2025-09;   0.00;   5.00;    10.00;     null;     null;     null
+                2025-10;   0.00;   5.00;    10.00;     null;     null;     null
+                2025-11;   0.00;   5.00;    10.00;     null;     null;     null
+                2025-12;   4.76;  10.00;    10.00;     null;    10.00;     null
+                2026-01;   0.00;   0.00;    10.00;     null;    10.00;     null
+                2026-02;   5.00;   5.00;    15.50;     null;    11.35;     null
+                """, ytdGridString(fromStart.stream().skip(40).toList()));
+
+        /* Measured from August: the year to date starts there, and no 4-year window fills. */
+        SequencedCollection<PerfAnalysis> fromAugust = PerformanceAnalyzer.INSTANCE.analyzePerformance(req
+                .resultStartDateIncl(parse("2023-08-01"))
+                .build());
+        assertEqualsWithMultilineMsg("""
+                 period; prdTwr; ytdTwr; trlTwr1Y; trlTwr2Y; trlTwr4Y; trlTwr5Y
+                2023-08;   0.00;   0.00;     null;     null;     null;     null
+                2023-09;   0.00;   0.00;     null;     null;     null;     null
+                2023-10;   0.00;   0.00;     null;     null;     null;     null
+                2023-11;   0.00;   0.00;     null;     null;     null;     null
+                2023-12;   4.76;   4.76;     null;     null;     null;     null
+                2024-01;   0.00;   0.00;     null;     null;     null;     null
+                """, ytdGridString(fromAugust.stream().limit(6).toList()));
+    }
+
+    private static String ytdGridString(List<PerfAnalysis> perfAnalyses) {
+        return CollectionPrintUtil.prettyPrintCollection(perfAnalyses,
+                List.of("period", "prdTwr", "ytdTwr", "trlTwr1Y", "trlTwr2Y", "trlTwr4Y", "trlTwr5Y"),
+                List.of(
+                        PerfAnalysis::periodCaption,
+                        PerfAnalysis::periodTwr,
+                        PerfAnalysis::ytdTwr,
+                        PerfAnalysis::trailingTwr1Y,
+                        PerfAnalysis::trailingTwr2Y,
+                        PerfAnalysis::trailingTwr4Y,
+                        PerfAnalysis::trailingTwr5Y
+                )
+        );
+    }
+
     public static void assertEqualsWithMultilineMsg(String expected, String actual) {
         Assertions.assertEquals(expected, actual, () -> "\nExpected:\n%s\nActual:\n%s\n".formatted(expected, actual));
     }

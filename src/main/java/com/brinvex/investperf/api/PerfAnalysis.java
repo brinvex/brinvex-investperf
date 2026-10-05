@@ -15,6 +15,8 @@ import java.time.LocalDate;
  * @param periodTwr                 Non-Annualized Time-Weighted Return for this sub-period
  * @param cumulativeTwr             Cumulative Time-Weighted Return up to and including this sub-period
  * @param annualizedTwr             Annualized Time-Weighted Return up to and including this sub-period
+ * @param ytdTwr                    Non-Annualized Time-Weighted Return from the start of the calendar year of this sub-period,
+ *                                  or from the start of the calculation if that is later, up to and including this sub-period
  * @param cumulativeMwr             Cumulative Money-Weighted Return up to and including this sub-period
  * @param annualizedMwr             Annualized Money-Weighted Return up to and including this sub-period
  * @param totalContribution         The sum of the initial asset value and all subsequent cash flows up to and including this sub-period.
@@ -29,6 +31,7 @@ import java.time.LocalDate;
  * @param trailingTwr1Y             The trailing Time-Weighted Return over the past 1 year.
  * @param trailingTwr2Y             The trailing Time-Weighted Return over the past 2 years.
  * @param trailingTwr3Y             The trailing Time-Weighted Return over the past 3 years.
+ * @param trailingTwr4Y             The trailing Time-Weighted Return over the past 4 years.
  * @param trailingTwr5Y             The trailing Time-Weighted Return over the past 5 years.
  * @param trailingTwr10Y            The trailing Time-Weighted Return over the past 10 years.
  */
@@ -42,6 +45,7 @@ public record PerfAnalysis(
         BigDecimal periodTwr,
         BigDecimal cumulativeTwr,
         BigDecimal annualizedTwr,
+        BigDecimal ytdTwr,
         BigDecimal cumulativeMwr,
         BigDecimal annualizedMwr,
         BigDecimal totalContribution,
@@ -54,6 +58,7 @@ public record PerfAnalysis(
         BigDecimal trailingTwr1Y,
         BigDecimal trailingTwr2Y,
         BigDecimal trailingTwr3Y,
+        BigDecimal trailingTwr4Y,
         BigDecimal trailingTwr5Y,
         BigDecimal trailingTwr10Y
 ) {
@@ -71,6 +76,7 @@ public record PerfAnalysis(
         private BigDecimal periodTwr;
         private BigDecimal cumulativeTwr;
         private BigDecimal annualizedTwr;
+        private BigDecimal ytdTwr;
         private BigDecimal cumulativeMwr;
         private BigDecimal annualizedMwr;
         private BigDecimal totalContribution;
@@ -83,6 +89,7 @@ public record PerfAnalysis(
         private BigDecimal trailingTwr1Y;
         private BigDecimal trailingTwr2Y;
         private BigDecimal trailingTwr3Y;
+        private BigDecimal trailingTwr4Y;
         private BigDecimal trailingTwr5Y;
         private BigDecimal trailingTwr10Y;
 
@@ -131,6 +138,11 @@ public record PerfAnalysis(
 
         public PerfAnalysisBuilder annualizedTwr(BigDecimal annualizedTwr) {
             this.annualizedTwr = annualizedTwr;
+            return this;
+        }
+
+        public PerfAnalysisBuilder ytdTwr(BigDecimal ytdTwr) {
+            this.ytdTwr = ytdTwr;
             return this;
         }
 
@@ -194,6 +206,11 @@ public record PerfAnalysis(
             return this;
         }
 
+        public PerfAnalysisBuilder trailingTwr4Y(BigDecimal trailingTwr4Y) {
+            this.trailingTwr4Y = trailingTwr4Y;
+            return this;
+        }
+
         public PerfAnalysisBuilder trailingTwr5Y(BigDecimal trailingTwr5Y) {
             this.trailingTwr5Y = trailingTwr5Y;
             return this;
@@ -215,6 +232,7 @@ public record PerfAnalysis(
                     this.periodTwr,
                     this.cumulativeTwr,
                     this.annualizedTwr,
+                    this.ytdTwr,
                     this.cumulativeMwr,
                     this.annualizedMwr,
                     this.totalContribution,
@@ -227,6 +245,7 @@ public record PerfAnalysis(
                     this.trailingTwr1Y,
                     this.trailingTwr2Y,
                     this.trailingTwr3Y,
+                    this.trailingTwr4Y,
                     this.trailingTwr5Y,
                     this.trailingTwr10Y);
         }

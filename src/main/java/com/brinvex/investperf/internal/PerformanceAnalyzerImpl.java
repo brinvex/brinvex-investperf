@@ -16,12 +16,17 @@ import com.brinvex.investperf.internal.util.Num;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.SequencedCollection;
 import java.util.SequencedMap;
 import java.util.SortedMap;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import static com.brinvex.investperf.api.AnnualizationOption.ANNUALIZE_IF_OVER_ONE_YEAR;
 import static com.brinvex.investperf.api.AnnualizationOption.DO_NOT_ANNUALIZE;
@@ -60,8 +65,10 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
         boolean calculateTrailingTwr1Y = req.calculateTrailingTwr1Y();
         boolean calculateTrailingTwr2Y = req.calculateTrailingTwr2Y();
         boolean calculateTrailingTwr3Y = req.calculateTrailingTwr3Y();
+        boolean calculateTrailingTwr4Y = req.calculateTrailingTwr4Y();
         boolean calculateTrailingTwr5Y = req.calculateTrailingTwr5Y();
         boolean calculateTrailingTwr10Y = req.calculateTrailingTwr10Y();
+        boolean calculateYtdTwr = req.calculateYtdTwr();
         Function<LocalDate, BigDecimal> assetValues = req.assetValues();
 
         LocalDate calcStartDateIncl = minDate(maxDate(resultStartDateIncl, req.performanceMeasureStartDateIncl()), resultEndDateIncl.plusDays(1));
@@ -130,18 +137,25 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
             SortedMap<LocalDate, BigDecimal> iterativeForwardFlows = flows;
             SortedMap<LocalDate, BigDecimal> iterativeForwardIncomes = incomes;
             int periodFrequencyPerYear = frequency.countPerYear();
-            int periodFrequencyPerYears2 = periodFrequencyPerYear * 2;
-            int periodFrequencyPerYears3 = periodFrequencyPerYear * 3;
-            int periodFrequencyPerYears5 = periodFrequencyPerYear * 5;
-            int periodFrequencyPerYears10 = periodFrequencyPerYear * 10;
             LimitedLinkedMap<LocalDate, BigDecimal> trailingProfits1Y = calculateTrailingAvgProfit1Y ? new LimitedLinkedMap<>(periodFrequencyPerYear) : null;
             LimitedLinkedMap<LocalDate, BigDecimal> trailingFlows1Y = calculateTrailingAvgFlow1Y ? new LimitedLinkedMap<>(periodFrequencyPerYear) : null;
             LimitedLinkedMap<LocalDate, BigDecimal> trailingIncomes1Y = calculateTrailingAvgIncome1Y ? new LimitedLinkedMap<>(periodFrequencyPerYear) : null;
-            LimitedLinkedMap<LocalDate, BigDecimal> trailingTwrFactors1Y = new LimitedLinkedMap<>(periodFrequencyPerYear);
-            LimitedLinkedMap<LocalDate, BigDecimal> trailingTwrFactors2Y = new LimitedLinkedMap<>(periodFrequencyPerYears2);
-            LimitedLinkedMap<LocalDate, BigDecimal> trailingTwrFactors3Y = new LimitedLinkedMap<>(periodFrequencyPerYears3);
-            LimitedLinkedMap<LocalDate, BigDecimal> trailingTwrFactors5Y = new LimitedLinkedMap<>(periodFrequencyPerYears5);
-            LimitedLinkedMap<LocalDate, BigDecimal> trailingTwrFactors10Y = new LimitedLinkedMap<>(periodFrequencyPerYears10);
+            List<Integer> trailingTwrYears = IntStream.of(1, 2, 3, 4, 5, 10)
+                    .filter(years -> switch (years) {
+                        case 1 -> calculateTrailingTwr1Y;
+                        case 2 -> calculateTrailingTwr2Y;
+                        case 3 -> calculateTrailingTwr3Y;
+                        case 4 -> calculateTrailingTwr4Y;
+                        case 5 -> calculateTrailingTwr5Y;
+                        default -> calculateTrailingTwr10Y;
+                    })
+                    .boxed()
+                    .toList();
+            /* The latest periods' TWR factors, as many as the longest trailing window asked for spans. */
+            LimitedLinkedMap<LocalDate, BigDecimal> latestTwrFactors = trailingTwrYears.isEmpty()
+                    ? null : new LimitedLinkedMap<>(periodFrequencyPerYear * trailingTwrYears.getLast());
+            BigDecimal ytdTwrFactor = ONE;
+            int ytdYear = calcStartDateIncl.getYear();
 
             BigDecimal startValueExcl = assetValues.apply(calcStartDateExcl);
             if (startValueExcl == null) {
@@ -329,76 +343,21 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                     trailingAvgIncome1Y = null;
                 }
 
-                BigDecimal trailTwrFactor1Y = null;
-                BigDecimal trailTwrFactor2Y = null;
-                BigDecimal trailTwrFactor3Y = null;
-                BigDecimal trailTwrFactor5Y = null;
-                BigDecimal trailTwrFactor10Y = null;
-                if (calculateTrailingTwr1Y || calculateTrailingTwr2Y || calculateTrailingTwr3Y || calculateTrailingTwr5Y || calculateTrailingTwr10Y) {
-                    trailingTwrFactors1Y.put(periodStartDateIncl, periodTwrFactor);
-                    if (trailingTwrFactors1Y.size() >= periodFrequencyPerYear) {
-                        trailTwrFactor1Y = trailingTwrFactors1Y
-                                .values()
-                                .stream()
-                                .reduce(ONE, BigDecimal::multiply)
-                                .setScale(calcScale, roundingMode);
+                if (calculateYtdTwr) {
+                    if (periodStartDateIncl.getYear() != ytdYear) {
+                        ytdYear = periodStartDateIncl.getYear();
+                        ytdTwrFactor = ONE;
                     }
-                    if (calculateTrailingTwr2Y || calculateTrailingTwr3Y || calculateTrailingTwr5Y || calculateTrailingTwr10Y) {
-                        trailingTwrFactors2Y.put(periodStartDateIncl, periodTwrFactor);
-                        if (trailingTwrFactors2Y.size() >= periodFrequencyPerYears2) {
-                            assert trailTwrFactor1Y != null;
-                            trailTwrFactor2Y = trailTwrFactor1Y.multiply(trailingTwrFactors2Y
-                                            .reversed()
-                                            .values()
-                                            .stream()
-                                            .skip(periodFrequencyPerYear)
-                                            .reduce(ONE, BigDecimal::multiply))
-                                    .setScale(calcScale, roundingMode);
-                        }
-                        if (calculateTrailingTwr3Y || calculateTrailingTwr5Y || calculateTrailingTwr10Y) {
-                            trailingTwrFactors3Y.put(periodStartDateIncl, periodTwrFactor);
-                            if (trailingTwrFactors3Y.size() >= periodFrequencyPerYears3) {
-                                assert trailTwrFactor2Y != null;
-                                trailTwrFactor3Y = trailTwrFactor2Y.multiply(trailingTwrFactors3Y
-                                                .reversed()
-                                                .values()
-                                                .stream()
-                                                .skip(periodFrequencyPerYears2)
-                                                .reduce(ONE, BigDecimal::multiply))
-                                        .setScale(calcScale, roundingMode);
-                            }
-                            if (calculateTrailingTwr5Y || calculateTrailingTwr10Y) {
-                                trailingTwrFactors5Y.put(periodStartDateIncl, periodTwrFactor);
-                                if (trailingTwrFactors5Y.size() >= periodFrequencyPerYears5) {
-                                    assert trailTwrFactor3Y != null;
-                                    trailTwrFactor5Y = trailTwrFactor3Y.multiply(trailingTwrFactors5Y
-                                                    .reversed()
-                                                    .values()
-                                                    .stream()
-                                                    .skip(periodFrequencyPerYears3)
-                                                    .reduce(ONE, BigDecimal::multiply))
-                                            .setScale(calcScale, roundingMode);
-                                }
-                                if (calculateTrailingTwr10Y) {
-                                    trailingTwrFactors10Y.put(periodStartDateIncl, periodTwrFactor);
-                                    if (trailingTwrFactors10Y.size() >= periodFrequencyPerYears10) {
-                                        assert trailTwrFactor5Y != null;
-                                        trailTwrFactor10Y = trailTwrFactor5Y.multiply(trailingTwrFactors10Y
-                                                        .reversed()
-                                                        .values()
-                                                        .stream()
-                                                        .skip(periodFrequencyPerYears5)
-                                                        .reduce(ONE, BigDecimal::multiply))
-                                                .setScale(calcScale, roundingMode);
-                                    }
-                                    trailTwrFactor10Y = trailTwrFactor10Y == null ? null : annualizer.annualizeGrowthFactor(ANNUALIZE_IF_OVER_ONE_YEAR, trailTwrFactor10Y, 10);
-                                }
-                                trailTwrFactor5Y = trailTwrFactor5Y == null ? null : annualizer.annualizeGrowthFactor(ANNUALIZE_IF_OVER_ONE_YEAR, trailTwrFactor5Y, 5);
-                            }
-                            trailTwrFactor3Y = trailTwrFactor3Y == null ? null : annualizer.annualizeGrowthFactor(ANNUALIZE_IF_OVER_ONE_YEAR, trailTwrFactor3Y, 3);
-                        }
-                        trailTwrFactor2Y = trailTwrFactor2Y == null ? null : annualizer.annualizeGrowthFactor(ANNUALIZE_IF_OVER_ONE_YEAR, trailTwrFactor2Y, 2);
-                    }
+                    ytdTwrFactor = ytdTwrFactor.multiply(periodTwrFactor).setScale(calcScale, roundingMode);
+                }
+
+                Map<Integer, BigDecimal> trailTwrFactors;
+                if (latestTwrFactors == null) {
+                    trailTwrFactors = Map.of();
+                } else {
+                    latestTwrFactors.put(periodStartDateIncl, periodTwrFactor);
+                    trailTwrFactors = trailingTwrFactors(
+                            latestTwrFactors, trailingTwrYears, periodFrequencyPerYear, calcScale, roundingMode, annualizer);
                 }
 
                 String periodCaption = frequency.caption(periodStartDateIncl);
@@ -412,6 +371,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                         .periodTwr(toPctAndScale(periodTwr, resultRatesInPct, resultRateScale, roundingMode))
                         .cumulativeTwr(toPctAndScale(cumulTwrFactor.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode))
                         .annualizedTwr(toPctAndScale(annTwrFactor.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode))
+                        .ytdTwr(calculateYtdTwr ? toPctAndScale(ytdTwrFactor.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode) : null)
                         .cumulativeMwr(toPctAndScale(cumulMwr, resultRatesInPct, resultRateScale, roundingMode))
                         .annualizedMwr(toPctAndScale(annMwr, resultRatesInPct, resultRateScale, roundingMode))
                         .totalContribution(Num.setScale(totalContribution, resultAmountScale, roundingMode))
@@ -421,11 +381,12 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                         .trailingAvgFlow1Y(trailingAvgFlow1Y)
                         .periodIncome(Num.setScale(periodIncomeSum, resultAmountScale, roundingMode))
                         .trailingAvgIncome1Y(trailingAvgIncome1Y)
-                        .trailingTwr1Y(toPctAndScale(trailTwrFactor1Y == null ? null : trailTwrFactor1Y.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode))
-                        .trailingTwr2Y(toPctAndScale(trailTwrFactor2Y == null ? null : trailTwrFactor2Y.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode))
-                        .trailingTwr3Y(toPctAndScale(trailTwrFactor3Y == null ? null : trailTwrFactor3Y.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode))
-                        .trailingTwr5Y(toPctAndScale(trailTwrFactor5Y == null ? null : trailTwrFactor5Y.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode))
-                        .trailingTwr10Y(toPctAndScale(trailTwrFactor10Y == null ? null : trailTwrFactor10Y.subtract(ONE), resultRatesInPct, resultRateScale, roundingMode))
+                        .trailingTwr1Y(growthFactorToRate(trailTwrFactors.get(1), resultRatesInPct, resultRateScale, roundingMode))
+                        .trailingTwr2Y(growthFactorToRate(trailTwrFactors.get(2), resultRatesInPct, resultRateScale, roundingMode))
+                        .trailingTwr3Y(growthFactorToRate(trailTwrFactors.get(3), resultRatesInPct, resultRateScale, roundingMode))
+                        .trailingTwr4Y(growthFactorToRate(trailTwrFactors.get(4), resultRatesInPct, resultRateScale, roundingMode))
+                        .trailingTwr5Y(growthFactorToRate(trailTwrFactors.get(5), resultRatesInPct, resultRateScale, roundingMode))
+                        .trailingTwr10Y(growthFactorToRate(trailTwrFactors.get(10), resultRatesInPct, resultRateScale, roundingMode))
                         .build());
 
                 //For the next iteration
@@ -453,6 +414,41 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
             }
         }
         return (SequencedCollection<PerfAnalysis>) results.values();
+    }
+
+    /**
+     * The growth factor of each trailing window the periods seen so far fill, keyed by its length in
+     * years and annualised over it; a window not yet filled is left out. The factors are taken from
+     * the latest back, so each window's product goes on from the shorter one's.
+     */
+    private static Map<Integer, BigDecimal> trailingTwrFactors(
+            SequencedMap<LocalDate, BigDecimal> periodTwrFactors,
+            List<Integer> windowYears,
+            int periodsPerYear,
+            int calcScale,
+            RoundingMode roundingMode,
+            Annualizer annualizer
+    ) {
+        Map<Integer, BigDecimal> results = new HashMap<>();
+        Iterator<BigDecimal> latestFirst = periodTwrFactors.sequencedValues().reversed().iterator();
+        BigDecimal product = ONE;
+        int periods = 0;
+        for (int years : windowYears) {
+            int windowPeriods = years * periodsPerYear;
+            if (periodTwrFactors.size() < windowPeriods) {
+                break;
+            }
+            for (; periods < windowPeriods; periods++) {
+                product = product.multiply(latestFirst.next());
+            }
+            BigDecimal factor = product.setScale(calcScale, roundingMode);
+            results.put(years, annualizer.annualizeGrowthFactor(ANNUALIZE_IF_OVER_ONE_YEAR, factor, years));
+        }
+        return results;
+    }
+
+    private static BigDecimal growthFactorToRate(BigDecimal growthFactor, boolean toPercent, int scale, RoundingMode roundingMode) {
+        return growthFactor == null ? null : toPctAndScale(growthFactor.subtract(ONE), toPercent, scale, roundingMode);
     }
 
     private static BigDecimal toPctAndScale(BigDecimal input, boolean toPercent, int scale, RoundingMode roundingMode) {

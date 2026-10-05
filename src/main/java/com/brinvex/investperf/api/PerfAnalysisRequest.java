@@ -42,8 +42,10 @@ public final class PerfAnalysisRequest {
     private final boolean calculateTrailingTwr1Y;
     private final boolean calculateTrailingTwr2Y;
     private final boolean calculateTrailingTwr3Y;
+    private final boolean calculateTrailingTwr4Y;
     private final boolean calculateTrailingTwr5Y;
     private final boolean calculateTrailingTwr10Y;
+    private final boolean calculateYtdTwr;
 
     @SuppressWarnings("ReplaceNullCheck")
     private PerfAnalysisRequest(
@@ -79,8 +81,10 @@ public final class PerfAnalysisRequest {
             Boolean calculateTrailingTwr1Y,
             Boolean calculateTrailingTwr2Y,
             Boolean calculateTrailingTwr3Y,
+            Boolean calculateTrailingTwr4Y,
             Boolean calculateTrailingTwr5Y,
-            Boolean calculateTrailingTwr10Y
+            Boolean calculateTrailingTwr10Y,
+            Boolean calculateYtdTwr
     ) {
         if (resultStartDateIncl == null) {
             throw new IllegalArgumentException("resultStartDateIncl must not be null");
@@ -118,8 +122,10 @@ public final class PerfAnalysisRequest {
         this.calculateTrailingTwr1Y = calculateTrailingTwr1Y != null && calculateTrailingTwr1Y;
         this.calculateTrailingTwr2Y = calculateTrailingTwr2Y != null && calculateTrailingTwr2Y;
         this.calculateTrailingTwr3Y = calculateTrailingTwr3Y != null && calculateTrailingTwr3Y;
+        this.calculateTrailingTwr4Y = calculateTrailingTwr4Y != null && calculateTrailingTwr4Y;
         this.calculateTrailingTwr5Y = calculateTrailingTwr5Y != null && calculateTrailingTwr5Y;
         this.calculateTrailingTwr10Y = calculateTrailingTwr10Y != null && calculateTrailingTwr10Y;
+        this.calculateYtdTwr = calculateYtdTwr != null && calculateYtdTwr;
 
         LocalDate calcStartDateIncl = this.resultStartDateIncl.isAfter(this.performanceMeasureStartDateIncl) ? this.resultStartDateIncl : this.performanceMeasureStartDateIncl;
         LocalDate calcEndDateIncl = this.resultEndDateIncl.isBefore(this.performanceMeasureEndDateIncl) ? this.resultEndDateIncl : this.performanceMeasureEndDateIncl;
@@ -273,12 +279,20 @@ public final class PerfAnalysisRequest {
         return this.calculateTrailingTwr3Y;
     }
 
+    public boolean calculateTrailingTwr4Y() {
+        return this.calculateTrailingTwr4Y;
+    }
+
     public boolean calculateTrailingTwr5Y() {
         return this.calculateTrailingTwr5Y;
     }
 
     public boolean calculateTrailingTwr10Y() {
         return this.calculateTrailingTwr10Y;
+    }
+
+    public boolean calculateYtdTwr() {
+        return this.calculateYtdTwr;
     }
 
     public static class PerfAnalysisRequestBuilder {
@@ -314,8 +328,10 @@ public final class PerfAnalysisRequest {
         private Boolean calculateTrailingTwr1Y;
         private Boolean calculateTrailingTwr2Y;
         private Boolean calculateTrailingTwr3Y;
+        private Boolean calculateTrailingTwr4Y;
         private Boolean calculateTrailingTwr5Y;
         private Boolean calculateTrailingTwr10Y;
+        private Boolean calculateYtdTwr;
 
         private PerfAnalysisRequestBuilder() {
         }
@@ -429,8 +445,10 @@ public final class PerfAnalysisRequest {
                     calculateTrailingTwr1Y,
                     calculateTrailingTwr2Y,
                     calculateTrailingTwr3Y,
+                    calculateTrailingTwr4Y,
                     calculateTrailingTwr5Y,
-                    calculateTrailingTwr10Y
+                    calculateTrailingTwr10Y,
+                    calculateYtdTwr
             );
         }
 
@@ -562,6 +580,11 @@ public final class PerfAnalysisRequest {
             return this;
         }
 
+        public PerfAnalysisRequestBuilder calculateTrailingTwr4Y(Boolean calculateTrailingTwr4Y) {
+            this.calculateTrailingTwr4Y = calculateTrailingTwr4Y;
+            return this;
+        }
+
         public PerfAnalysisRequestBuilder calculateTrailingTwr5Y(Boolean calculateTrailingTwr5Y) {
             this.calculateTrailingTwr5Y = calculateTrailingTwr5Y;
             return this;
@@ -569,6 +592,11 @@ public final class PerfAnalysisRequest {
 
         public PerfAnalysisRequestBuilder calculateTrailingTwr10Y(Boolean calculateTrailingTwr10Y) {
             this.calculateTrailingTwr10Y = calculateTrailingTwr10Y;
+            return this;
+        }
+
+        public PerfAnalysisRequestBuilder calculateYtdTwr(Boolean calculateYtdTwr) {
+            this.calculateYtdTwr = calculateYtdTwr;
             return this;
         }
     }
