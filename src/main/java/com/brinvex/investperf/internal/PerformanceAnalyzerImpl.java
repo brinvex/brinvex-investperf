@@ -10,12 +10,14 @@ import com.brinvex.investperf.api.PerformanceAnalyzer;
 import com.brinvex.investperf.api.PerformanceCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.MwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.TwrCalculator;
+import com.brinvex.investperf.api.TrailingAvgOption;
 import com.brinvex.investperf.internal.util.LimitedLinkedMap;
 import com.brinvex.investperf.internal.util.Num;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -69,6 +71,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
         boolean calculateTrailingTwr5Y = req.calculateTrailingTwr5Y();
         boolean calculateTrailingTwr10Y = req.calculateTrailingTwr10Y();
         boolean calculateYtdTwr = req.calculateYtdTwr();
+        TrailingAvgOption trailingAvgOption = req.trailingAvgOption();
         Function<LocalDate, BigDecimal> assetValues = req.assetValues();
 
         LocalDate calcStartDateIncl = minDate(maxDate(resultStartDateIncl, req.performanceMeasureStartDateIncl()), resultEndDateIncl.plusDays(1));
@@ -305,10 +308,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                 BigDecimal trailingAvgProfit1Y;
                 if (calculateTrailingAvgProfit1Y) {
                     trailingProfits1Y.put(periodStartDateIncl, periodProfit);
-                    trailingAvgProfit1Y = trailingProfits1Y.values()
-                            .stream()
-                            .reduce(ZERO, BigDecimal::add)
-                            .divide(BigDecimal.valueOf(periodFrequencyPerYear), resultAmountScale, roundingMode);
+                    trailingAvgProfit1Y = trailingAvg(trailingProfits1Y.values(), periodFrequencyPerYear, trailingAvgOption, resultAmountScale, roundingMode);
                 } else {
                     trailingAvgProfit1Y = null;
                 }
@@ -316,10 +316,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                 BigDecimal trailingAvgFlow1Y;
                 if (calculateTrailingAvgFlow1Y) {
                     trailingFlows1Y.put(periodStartDateIncl, periodFlowSum);
-                    trailingAvgFlow1Y = trailingFlows1Y.values()
-                            .stream()
-                            .reduce(ZERO, BigDecimal::add)
-                            .divide(BigDecimal.valueOf(periodFrequencyPerYear), resultAmountScale, roundingMode);
+                    trailingAvgFlow1Y = trailingAvg(trailingFlows1Y.values(), periodFrequencyPerYear, trailingAvgOption, resultAmountScale, roundingMode);
                 } else {
                     trailingAvgFlow1Y = null;
                 }
@@ -331,10 +328,7 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
                     periodIncomeSum = periodIncomes.values().stream().reduce(ZERO, BigDecimal::add);
                     if (calculateTrailingAvgIncome1Y) {
                         trailingIncomes1Y.put(periodStartDateIncl, periodIncomeSum);
-                        trailingAvgIncome1Y = trailingIncomes1Y.values()
-                                .stream()
-                                .reduce(ZERO, BigDecimal::add)
-                                .divide(BigDecimal.valueOf(periodFrequencyPerYear), resultAmountScale, roundingMode);
+                        trailingAvgIncome1Y = trailingAvg(trailingIncomes1Y.values(), periodFrequencyPerYear, trailingAvgOption, resultAmountScale, roundingMode);
                     } else {
                         trailingAvgIncome1Y = null;
                     }
@@ -449,6 +443,24 @@ public class PerformanceAnalyzerImpl implements PerformanceAnalyzer {
 
     private static BigDecimal growthFactorToRate(BigDecimal growthFactor, boolean toPercent, int scale, RoundingMode roundingMode) {
         return growthFactor == null ? null : toPctAndScale(growthFactor.subtract(ONE), toPercent, scale, roundingMode);
+    }
+
+    /**
+     * The average per period of the latest values, which make up a year once enough periods have been
+     * calculated; the option says what it is before then.
+     */
+    private static BigDecimal trailingAvg(
+            Collection<BigDecimal> values,
+            int periodsPerYear,
+            TrailingAvgOption option,
+            int scale,
+            RoundingMode roundingMode
+    ) {
+        if (option == TrailingAvgOption.REQUIRE_FULL_YEAR && values.size() < periodsPerYear) {
+            return null;
+        }
+        int divisor = option == TrailingAvgOption.AVERAGE_AVAILABLE_PERIODS ? values.size() : periodsPerYear;
+        return values.stream().reduce(ZERO, BigDecimal::add).divide(BigDecimal.valueOf(divisor), scale, roundingMode);
     }
 
     private static BigDecimal toPctAndScale(BigDecimal input, boolean toPercent, int scale, RoundingMode roundingMode) {

@@ -7,6 +7,7 @@ import com.brinvex.investperf.api.PerformanceAnalyzer;
 import com.brinvex.investperf.api.PerformanceCalculator.LinkedModifiedDietzTwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.ModifiedDietzMwrCalculator;
 import com.brinvex.investperf.api.PerformanceCalculator.TrueTwrCalculator;
+import com.brinvex.investperf.api.TrailingAvgOption;
 import test.com.brinvex.investperf.util.CollectionPrintUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,8 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.SequencedCollection;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.brinvex.investperf.api.Frequency.MONTH;
+import static com.brinvex.investperf.api.TrailingAvgOption.AVERAGE_AVAILABLE_PERIODS;
+import static com.brinvex.investperf.api.TrailingAvgOption.DIVIDE_BY_FULL_YEAR;
+import static com.brinvex.investperf.api.TrailingAvgOption.REQUIRE_FULL_YEAR;
 import static com.brinvex.investperf.api.FlowTiming.BEGINNING_OF_DAY;
 import static com.brinvex.investperf.api.FlowTiming.END_OF_DAY;
 import static java.time.LocalDate.now;
@@ -107,9 +114,9 @@ public class PerformanceAnalyzerTest {
                 .build());
         String expected = """
                  period; startVal; endVal; prdFlow; prdTwr; cumTwr; annTwr; cumMwr; annMwr; totContrib; prdProf; totProf; trlAvgProf1Y; trlAvgFlow1Y; prdIncm; trlAvgIncm1Y; trlTwr1Y; trlTwr2Y; trlTwr3Y; trlTwr5Y; trlTwr10Y
-                2023-01;   100000;  98000;    2000;  -3.97;  -3.97;  -3.97;  -3.97;  -3.97;     102000;   -4000;   -4000;         -333;          167;    null;         null;     null;     null;     null;     null;      null
-                2023-02;    98000; 117000;    -500;  20.04;  15.27;  15.27;  15.34;  15.34;     101500;   19500;   15500;         1292;          125;    null;         null;     null;     null;     null;     null;      null
-                2023-03;   117000; 120000;       0;   2.56;  18.23;  18.23;  18.28;  18.28;     101500;    3000;   18500;         1542;          125;    null;         null;     null;     null;     null;     null;      null
+                2023-01;   100000;  98000;    2000;  -3.97;  -3.97;  -3.97;  -3.97;  -3.97;     102000;   -4000;   -4000;        -4000;         2000;    null;         null;     null;     null;     null;     null;      null
+                2023-02;    98000; 117000;    -500;  20.04;  15.27;  15.27;  15.34;  15.34;     101500;   19500;   15500;         7750;          750;    null;         null;     null;     null;     null;     null;      null
+                2023-03;   117000; 120000;       0;   2.56;  18.23;  18.23;  18.28;  18.28;     101500;    3000;   18500;         6167;          500;    null;         null;     null;     null;     null;     null;      null
                 """;
         String actual = perfAnalysesToGridString(perfAnalyses);
         assertEqualsWithMultilineMsg(expected, actual);
@@ -378,6 +385,7 @@ public class PerformanceAnalyzerTest {
                 .calculateMwr(true)
                 .calculateTrailingAvgProfit1Y(true)
                 .calculateTrailingAvgFlow1Y(true)
+                .trailingAvgOption(DIVIDE_BY_FULL_YEAR)
                 .build());
         String expected = """
                  period; startVal;  endVal; prdFlow; prdTwr; cumTwr; annTwr; cumMwr; annMwr; totContrib; prdProf; totProf; trlAvgProf1Y; trlAvgFlow1Y; prdIncm; trlAvgIncm1Y; trlTwr1Y; trlTwr2Y; trlTwr3Y; trlTwr5Y; trlTwr10Y
@@ -419,6 +427,7 @@ public class PerformanceAnalyzerTest {
                 .calculateMwr(true)
                 .calculateTrailingAvgProfit1Y(true)
                 .calculateTrailingAvgFlow1Y(true)
+                .trailingAvgOption(DIVIDE_BY_FULL_YEAR)
                 .build());
         String expected = """
                  period; startVal; endVal; prdFlow; prdTwr; cumTwr; annTwr; cumMwr; annMwr; totContrib; prdProf; totProf; trlAvgProf1Y; trlAvgFlow1Y; prdIncm; trlAvgIncm1Y; trlTwr1Y; trlTwr2Y; trlTwr3Y; trlTwr5Y; trlTwr10Y
@@ -475,6 +484,7 @@ public class PerformanceAnalyzerTest {
                 .calculateMwr(true)
                 .calculateTrailingAvgProfit1Y(true)
                 .calculateTrailingAvgFlow1Y(true)
+                .trailingAvgOption(DIVIDE_BY_FULL_YEAR)
                 .calculatePeriodIncome(true)
                 .calculateTrailingAvgIncome1Y(true)
                 .build());
@@ -529,6 +539,7 @@ public class PerformanceAnalyzerTest {
                 .calculateMwr(true)
                 .calculateTrailingAvgProfit1Y(true)
                 .calculateTrailingAvgFlow1Y(true)
+                .trailingAvgOption(DIVIDE_BY_FULL_YEAR)
                 .calculateTrailingTwr1Y(true)
                 .calculateTrailingTwr2Y(true)
                 .build());
@@ -593,6 +604,7 @@ public class PerformanceAnalyzerTest {
                 .calculateMwr(true)
                 .calculateTrailingAvgProfit1Y(true)
                 .calculateTrailingAvgFlow1Y(true)
+                .trailingAvgOption(DIVIDE_BY_FULL_YEAR)
                 .calculateTrailingTwr1Y(true)
                 .calculateTrailingTwr2Y(true)
                 .build());
@@ -1097,6 +1109,41 @@ public class PerformanceAnalyzerTest {
                 2023-12;   4.76;   4.76;     null;     null;     null;     null
                 2024-01;   0.00;   0.00;     null;     null;     null;     null
                 """, ytdGridString(fromAugust.stream().limit(6).toList()));
+    }
+
+    /*
+    A gain of 12 in the first month, none for eleven months, then 24: averaged over the months there
+    are, divided by a full year, or given only once a year has been calculated. From the thirteenth
+    month on the window is a full year whichever the option, and the three agree.
+    */
+    @Test
+    void trailingAvgOptions() {
+        Map<LocalDate, BigDecimal> navs = new TreeMap<>();
+        navs.put(parse("2022-12-31"), new BigDecimal("100"));
+        for (LocalDate monthEnd = parse("2023-01-31"); !monthEnd.isAfter(parse("2023-12-31")); monthEnd = monthEnd.plusDays(1).plusMonths(1).minusDays(1)) {
+            navs.put(monthEnd, new BigDecimal("112"));
+        }
+        navs.put(parse("2024-01-31"), new BigDecimal("136"));
+        Function<TrailingAvgOption, List<BigDecimal>> avgProfits = option -> PerformanceAnalyzer.INSTANCE.analyzePerformance(PerfAnalysisRequest.builder()
+                        .resultStartDateIncl(parse("2023-01-01"))
+                        .resultEndDateIncl(parse("2024-01-31"))
+                        .assetValues(navs)
+                        .flows(List.of())
+                        .resultAmountScale(2)
+                        .calculateTrailingAvgProfit1Y(true)
+                        .trailingAvgOption(option)
+                        .build())
+                .stream()
+                .map(PerfAnalysis::trailingAvgProfit1Y)
+                .toList();
+        Assertions.assertEquals(avgProfits.apply(AVERAGE_AVAILABLE_PERIODS), avgProfits.apply(null));
+        assertEqualsWithMultilineMsg("""
+                12.00 6.00 4.00 3.00 2.40 2.00 1.71 1.50 1.33 1.20 1.09 1.00 2.00
+                1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 2.00
+                null null null null null null null null null null null 1.00 2.00
+                """, Stream.of(AVERAGE_AVAILABLE_PERIODS, DIVIDE_BY_FULL_YEAR, REQUIRE_FULL_YEAR)
+                .map(option -> avgProfits.apply(option).stream().map(String::valueOf).collect(Collectors.joining(" ")) + "\n")
+                .collect(Collectors.joining()));
     }
 
     private static String ytdGridString(List<PerfAnalysis> perfAnalyses) {

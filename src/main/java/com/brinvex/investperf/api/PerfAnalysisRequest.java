@@ -46,6 +46,7 @@ public final class PerfAnalysisRequest {
     private final boolean calculateTrailingTwr5Y;
     private final boolean calculateTrailingTwr10Y;
     private final boolean calculateYtdTwr;
+    private final TrailingAvgOption trailingAvgOption;
 
     @SuppressWarnings("ReplaceNullCheck")
     private PerfAnalysisRequest(
@@ -84,7 +85,8 @@ public final class PerfAnalysisRequest {
             Boolean calculateTrailingTwr4Y,
             Boolean calculateTrailingTwr5Y,
             Boolean calculateTrailingTwr10Y,
-            Boolean calculateYtdTwr
+            Boolean calculateYtdTwr,
+            TrailingAvgOption trailingAvgOption
     ) {
         if (resultStartDateIncl == null) {
             throw new IllegalArgumentException("resultStartDateIncl must not be null");
@@ -126,6 +128,7 @@ public final class PerfAnalysisRequest {
         this.calculateTrailingTwr5Y = calculateTrailingTwr5Y != null && calculateTrailingTwr5Y;
         this.calculateTrailingTwr10Y = calculateTrailingTwr10Y != null && calculateTrailingTwr10Y;
         this.calculateYtdTwr = calculateYtdTwr != null && calculateYtdTwr;
+        this.trailingAvgOption = trailingAvgOption == null ? TrailingAvgOption.AVERAGE_AVAILABLE_PERIODS : trailingAvgOption;
 
         LocalDate calcStartDateIncl = this.resultStartDateIncl.isAfter(this.performanceMeasureStartDateIncl) ? this.resultStartDateIncl : this.performanceMeasureStartDateIncl;
         LocalDate calcEndDateIncl = this.resultEndDateIncl.isBefore(this.performanceMeasureEndDateIncl) ? this.resultEndDateIncl : this.performanceMeasureEndDateIncl;
@@ -295,6 +298,10 @@ public final class PerfAnalysisRequest {
         return this.calculateYtdTwr;
     }
 
+    public TrailingAvgOption trailingAvgOption() {
+        return this.trailingAvgOption;
+    }
+
     public static class PerfAnalysisRequestBuilder {
         private Frequency resultFrequency;
         private LocalDate resultStartDateIncl;
@@ -332,6 +339,7 @@ public final class PerfAnalysisRequest {
         private Boolean calculateTrailingTwr5Y;
         private Boolean calculateTrailingTwr10Y;
         private Boolean calculateYtdTwr;
+        private TrailingAvgOption trailingAvgOption;
 
         private PerfAnalysisRequestBuilder() {
         }
@@ -448,7 +456,8 @@ public final class PerfAnalysisRequest {
                     calculateTrailingTwr4Y,
                     calculateTrailingTwr5Y,
                     calculateTrailingTwr10Y,
-                    calculateYtdTwr
+                    calculateYtdTwr,
+                    trailingAvgOption
             );
         }
 
@@ -597,6 +606,15 @@ public final class PerfAnalysisRequest {
 
         public PerfAnalysisRequestBuilder calculateYtdTwr(Boolean calculateYtdTwr) {
             this.calculateYtdTwr = calculateYtdTwr;
+            return this;
+        }
+
+        /**
+         * How the trailing 1-year averages are taken over the first year. Left unset, it is
+         * {@link TrailingAvgOption#AVERAGE_AVAILABLE_PERIODS}.
+         */
+        public PerfAnalysisRequestBuilder trailingAvgOption(TrailingAvgOption trailingAvgOption) {
+            this.trailingAvgOption = trailingAvgOption;
             return this;
         }
     }
